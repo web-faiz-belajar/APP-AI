@@ -273,12 +273,16 @@ function deleteConversation(chatId) {
 
     conversations = conversations.filter(item => item.id !== chatId);
 
-    // Jika obrolan aktif dihapus, pilih obrolan lain
     if (activeChatId === chatId) {
         activeChatId = conversations.length > 0
             ? conversations[0].id
             : null;
     }
+
+    saveConversations();
+    renderHistory();
+    renderMessages();
+}
 
     // Simpan perubahan ke penyimpanan browser
     localStorage.setItem(

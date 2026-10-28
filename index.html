@@ -138,25 +138,38 @@
 
             <form id="chatForm">
 
-                <div class="input-tools">
+                <div class="message-input-area">
 
-                    <label for="fileInput"
-                           class="tool-btn">
-                        + File
-                    </label>
+                  <label for="fileInput"
+                         class="tool-btn attach-btn"
+                         aria-label="Pilih file">
+                       +
+                </label>
 
-                    <input id="fileInput"
-                           type="file"
-                           accept="image/*,.pdf,.txt,.doc,.docx"
-                           hidden>
+             <input id="fileInput"
+                    type="file"
+                    accept="image/*,.pdf,.txt,.doc,.docx"
+                    hidden>
 
-                    <button id="voiceBtn"
-                            type="button"
-                            class="tool-btn">
-                        🎙️ Voice
-                    </button>
+        <textarea id="messageInput"
+                  rows="1"
+                  placeholder="Tulis pesan..."
+                  aria-label="Tulis pesan"></textarea>
 
-                </div>
+    <button id="voiceBtn"
+            type="button"
+            class="tool-btn voice-btn"
+            aria-label="Rekam voice note">
+        🎙️
+    </button>
+
+    <button id="sendBtn"
+            type="submit"
+            aria-label="Kirim pesan">
+        ↑
+    </button>
+
+</div>
 
                 <div class="message-input-area">
 

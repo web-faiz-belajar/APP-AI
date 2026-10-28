@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#101522">
+
+    <title>Faiz AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Halaman utama -->
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+
+            <button id="homeBtn"
+                    class="logo"
+                    aria-label="Beranda">
+                Faiz AI
+            </button>
+
+            <div class="header-actions">
+
+                <button id="bubbleBtn"
+                        class="bubble-btn"
+                        aria-label="Buka gelembung chat">
+                    <span class="bubble-icon"></span>
+                </button>
+
+                <button id="menuBtn"
+                        class="menu-btn"
+                        aria-label="Buka menu"
+                        aria-expanded="false">
+                    ☰
+                </button>
+
+            </div>
+        </header>
+
+        <!-- Menu samping -->
+        <aside id="sidebar" class="sidebar"
+               aria-label="Menu navigasi" hidden>
+
+            <div class="sidebar-header">
+                <h2>Menu</h2>
+                <button id="closeMenuBtn"
+                        aria-label="Tutup menu">
+                    ✕
+                </button>
+            </div>
+
+            <button id="newChatBtn">
+                + Obrolan baru
+            </button>
+
+            <button id="homeMenuBtn">
+                Beranda
+            </button>
+
+            <button id="searchBtn">
+                Cari obrolan
+            </button>
+
+            <section class="history-section">
+                <h3>Riwayat obrolan</h3>
+                <div id="historyList">
+                    <p>Belum ada riwayat obrolan.</p>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3>Pengaturan</h3>
+
+                <label for="themeSelect">
+                    Tema tampilan
+                </label>
+
+                <select id="themeSelect">
+                    <option value="system">
+                        Ikuti pengaturan HP
+                    </option>
+                    <option value="light">
+                        Terang
+                    </option>
+                    <option value="dark">
+                        Gelap
+                    </option>
+                </select>
+
+                <button id="renameChatBtn">
+                    Edit nama obrolan
+                </button>
+
+                <button id="bubbleMenuBtn">
+                    App Bubbles
+                </button>
+
+                <button id="profileBtn">
+                    Profil dan login
+                </button>
+            </section>
+
+        </aside>
+
+        <!-- Konten chat -->
+        <main id="mainContent">
+
+            <section id="welcomeScreen"
+                     class="welcome-screen">
+
+                <div class="ai-avatar">AI</div>
+
+                <h1>Ada yang bisa saya bantu?</h1>
+
+                <p>
+                    Tanyakan apa saja, belajar coding,
+                    atau mulai ide baru.
+                </p>
+
+            </section>
+
+            <section id="chatMessages"
+                     class="chat-messages"
+                     aria-live="polite"
+                     aria-label="Pesan obrolan">
+            </section>
+
+        </main>
+
+        <!-- Area input pesan -->
+        <footer class="chat-footer">
+
+            <form id="chatForm">
+
+                <div class="input-tools">
+
+                    <label for="fileInput"
+                           class="tool-btn">
+                        + File
+                    </label>
+
+                    <input id="fileInput"
+                           type="file"
+                           accept="image/*,.pdf,.txt,.doc,.docx"
+                           hidden>
+
+                    <button id="voiceBtn"
+                            type="button"
+                            class="tool-btn">
+                        🎙️ Voice
+                    </button>
+
+                </div>
+
+                <div class="message-input-area">
+
+                    <textarea id="messageInput"
+                              rows="1"
+                              placeholder="Tulis pesan..."
+                              aria-label="Tulis pesan"></textarea>
+
+                    <button id="sendBtn"
+                            type="submit"
+                            aria-label="Kirim pesan">
+                        ↑
+                    </button>
+
+                </div>
+
+                <p id="fileStatus"
+                   class="file-status">
+                </p>
+
+                <p class="disclaimer">
+                    Periksa kembali jawaban AI.
+                </p>
+
+            </form>
+
+        </footer>
+
+    </div>
+
+    <!-- Gelembung di dalam halaman website -->
+    <button id="floatingBubble"
+            class="floating-bubble"
+            aria-label="Buka obrolan mengambang"
+            hidden>
+        AI
+    </button>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>

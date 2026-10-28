@@ -230,7 +230,6 @@ function renderHistory() {
 
         button.addEventListener("contextmenu", event => {
             event.preventDefault();
-            deleteConversation(chat.id);
         });
 
         button.addEventListener("pointerdown", () => {

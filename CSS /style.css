@@ -1,0 +1,491 @@
+
+/* =========================
+   1. PENGATURAN DASAR
+========================= */
+
+:root {
+    color-scheme: light;
+
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --surface-soft: #edf1f8;
+    --text: #182033;
+    --muted: #70798d;
+    --border: #e0e5ef;
+    --primary: #5267ed;
+    --primary-hover: #4053d4;
+    --shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
+}
+
+body[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #0d111b;
+    --surface: #151b29;
+    --surface-soft: #20283a;
+    --text: #f1f4fc;
+    --muted: #9ba6bd;
+    --border: #2b3448;
+    --primary: #8290ff;
+    --primary-hover: #9ca7ff;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+label:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================
+   2. KERANGKA APLIKASI
+========================= */
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+/* =========================
+   3. HEADER
+========================= */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    z-index: 5;
+}
+
+.logo {
+    border: 0;
+    background: transparent;
+    color: var(--primary);
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-btn,
+.bubble-btn {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface-soft);
+    color: var(--text);
+    font-size: 22px;
+}
+
+.menu-btn:hover,
+.bubble-btn:hover {
+    background: var(--border);
+}
+
+/* Ikon gelembung */
+
+.bubble-icon {
+    position: relative;
+    width: 17px;
+    height: 17px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+}
+
+.bubble-icon::after {
+    content: "";
+    position: absolute;
+    right: -4px;
+    bottom: -3px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--surface-soft);
+}
+
+/* =========================
+   4. MENU SAMPING
+========================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 88vw);
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    z-index: 20;
+    animation: slide-in 0.2s ease;
+}
+
+.sidebar[hidden],
+.floating-bubble[hidden] {
+    display: none !important;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.sidebar-header button {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface-soft);
+    color: var(--text);
+}
+
+.sidebar > button,
+.settings-section > button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    text-align: left;
+    color: var(--text);
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.sidebar > button:first-of-type {
+    background: var(--primary);
+    color: white;
+    border-color: transparent;
+}
+
+.sidebar > button:hover,
+.settings-section > button:hover {
+    border-color: var(--primary);
+}
+
+.history-section,
+.settings-section {
+    margin-top: 26px;
+}
+
+.history-section h3,
+.settings-section h3 {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.history-section p {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.settings-section label {
+    display: block;
+    margin: 12px 0 8px;
+    font-size: 14px;
+}
+
+#themeSelect {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+/* =========================
+   5. KONTEN CHAT
+========================= */
+
+#mainContent {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.welcome-screen {
+    width: min(100% - 32px, 540px);
+    margin: auto;
+    padding: 32px 0;
+    text-align: center;
+}
+
+.ai-avatar {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 20px;
+    border-radius: 24px;
+    color: white;
+    font-weight: 800;
+    font-size: 21px;
+    background: linear-gradient(135deg, #6475ff, #9c65ee);
+    box-shadow: 0 10px 28px rgba(82, 103, 237, 0.25);
+}
+
+.welcome-screen h1 {
+    margin: 0 0 12px;
+    font-size: clamp(23px, 5vw, 32px);
+    letter-spacing: -0.8px;
+}
+
+.welcome-screen p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: min(100% - 28px, 760px);
+    margin: 0 auto;
+    padding: 20px 0 30px;
+}
+
+.chat-message {
+    max-width: 88%;
+    padding: 13px 16px;
+    border-radius: 18px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.chat-message.user {
+    align-self: flex-end;
+    color: white;
+    background: #5267ed;
+    border-bottom-right-radius: 5px;
+}
+
+.chat-message.ai {
+    align-self: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 5px;
+}
+
+/* =========================
+   6. AREA INPUT
+========================= */
+
+.chat-footer {
+    flex-shrink: 0;
+    padding: 12px 14px max(12px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+}
+
+#chatForm {
+    width: min(100%, 760px);
+    margin: 0 auto;
+}
+
+.input-tools {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 35px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.tool-btn:hover {
+    border-color: var(--primary);
+}
+
+.message-input-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--bg);
+}
+
+#messageInput {
+    flex: 1;
+    min-width: 0;
+    max-height: 140px;
+    resize: none;
+    padding: 9px 8px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+#messageInput::placeholder {
+    color: var(--muted);
+}
+
+#sendBtn {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 25px;
+}
+
+#sendBtn:hover {
+    background: var(--primary-hover);
+}
+
+.file-status,
+.disclaimer {
+    margin: 8px 0 0;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.disclaimer {
+    text-align: center;
+}
+
+/* =========================
+   7. GELEMBUNG WEBSITE
+========================= */
+
+.floating-bubble {
+    position: fixed;
+    right: 18px;
+    bottom: 105px;
+    z-index: 50;
+    width: 58px;
+    height: 58px;
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6475ff, #9c65ee);
+    color: white;
+    font-weight: 800;
+    box-shadow: 0 8px 25px rgba(60, 70, 150, 0.35);
+    touch-action: none;
+}
+
+/* =========================
+   8. ANIMASI DAN HP
+========================= */
+
+@keyframes slide-in {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .app-header {
+        padding-right: 28px;
+        padding-left: 28px;
+    }
+
+    .chat-footer {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+
+    .sidebar {
+        width: 340px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

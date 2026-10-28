@@ -725,3 +725,228 @@ body[data-theme="dark"] {
         min-height: 38px;
     }
 }
+
+/* ==============================
+   FAIZ AI — MENU SAMPING PREMIUM
+============================== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: min(350px, 88vw);
+    padding: 22px 18px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    background: var(--surface);
+    color: var(--text);
+
+    border-left: 1px solid var(--border);
+    border-radius: 24px 0 0 24px;
+
+    box-shadow: -18px 0 50px rgba(0, 0, 0, 0.18);
+
+    z-index: 100;
+
+    animation: faiz-menu-in 0.24s ease-out;
+}
+
+/* Header menu */
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: -4px 0 22px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+    font-size: 22px;
+    font-weight: 750;
+    letter-spacing: -0.6px;
+}
+
+.sidebar-header button {
+    display: grid;
+    place-items: center;
+
+    width: 40px;
+    height: 40px;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    background: var(--surface-soft);
+    color: var(--text);
+
+    font-size: 18px;
+}
+
+/* Tombol navigasi */
+
+.sidebar > button,
+.settings-section > button {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 48px;
+
+    margin: 7px 0;
+    padding: 13px 15px;
+
+    border: 1px solid transparent;
+    border-radius: 14px;
+
+    background: transparent;
+    color: var(--text);
+
+    font-size: 14px;
+    font-weight: 550;
+    text-align: left;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.sidebar > button:hover,
+.settings-section > button:hover {
+    background: var(--surface-soft);
+    border-color: var(--border);
+}
+
+.sidebar > button:active,
+.settings-section > button:active {
+    transform: scale(0.98);
+}
+
+/* Tombol obrolan baru */
+
+.sidebar > button:first-of-type {
+    justify-content: center;
+
+    background: linear-gradient(
+        135deg,
+        #6558f5,
+        #8b70ff
+    );
+
+    color: #ffffff;
+    border-color: transparent;
+
+    box-shadow: 0 6px 18px rgba(101, 88, 245, 0.20);
+}
+
+.sidebar > button:first-of-type:hover {
+    background: linear-gradient(
+        135deg,
+        #5144df,
+        #7959ee
+    );
+}
+
+/* Judul bagian */
+
+.history-section,
+.settings-section {
+    margin-top: 28px;
+}
+
+.history-section h3,
+.settings-section h3 {
+    margin: 0 0 12px;
+    padding: 0 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+/* Riwayat obrolan */
+
+#historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.history-item {
+    width: 100%;
+    padding: 12px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    background: transparent;
+    color: var(--text);
+
+    font-size: 13px;
+}
+
+.history-item:hover {
+    background: var(--surface-soft);
+}
+
+.history-item[aria-current="true"] {
+    background: var(--surface-soft);
+    border-color: var(--border);
+}
+
+/* Pilihan tema */
+
+.settings-section label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+#themeSelect {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: var(--surface-soft);
+    color: var(--text);
+}
+
+/* Animasi menu dari kanan */
+
+@keyframes faiz-menu-in {
+    from {
+        transform: translateX(24px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Menghormati pengaturan animasi perangkat */
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar {
+        animation: none;
+    }
+}

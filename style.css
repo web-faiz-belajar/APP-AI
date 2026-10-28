@@ -950,3 +950,35 @@ body[data-theme="dark"] {
         animation: none;
     }
 }
+/* Ikon navigasi menu */
+
+.menu-icon {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+
+    border-radius: 10px;
+    background: var(--surface-soft);
+    color: var(--primary);
+
+    font-size: 21px;
+    line-height: 1;
+}
+
+.sidebar > button:first-of-type .menu-icon {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+/* Profil berada di bagian bawah menu */
+
+#profileBtn {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 14px 14px;
+    padding-top: 18px;
+}

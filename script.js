@@ -283,16 +283,6 @@ function deleteConversation(chatId) {
     renderMessages();
 }
 
-    // Simpan perubahan ke penyimpanan browser
-    localStorage.setItem(
-        "faizAI_conversations",
-        JSON.stringify(conversations)
-    );
-
-    renderHistory();
-    renderMessages();
-}
-
 function renderMessages() {
     const chat = getActiveChat();
 

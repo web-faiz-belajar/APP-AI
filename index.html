@@ -2,216 +2,205 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <meta name="theme-color" content="#101522">
-
-    <title>APP AI</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101522">
+  <meta name="description" content="APP AI - Asisten chat pribadi">
+  <title>APP AI</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-theme="dark">
 
-    <!-- Halaman utama -->
-    <div class="app-container">
+  <div class="app-container">
 
-        <!-- Header -->
-        <header class="app-header">
+    <!-- HEADER -->
+    <header class="app-header">
+      <button id="homeBtn" class="logo" aria-label="Beranda">
+        APP AI
+      </button>
 
-            <button id="homeBtn"
-                    class="logo"
-                    aria-label="Beranda">
-                APP AI
-            </button>
+      <div class="header-actions">
+        <button id="bubbleBtn" class="bubble-btn"
+          type="button" aria-label="Tampilkan gelembung chat">
+          <span class="bubble-icon"></span>
+        </button>
 
-            <div class="header-actions">
+        <button id="menuBtn" class="menu-btn"
+          type="button" aria-label="Buka menu"
+          aria-expanded="false">
+          ☰
+        </button>
+      </div>
+    </header>
 
-                <button id="bubbleBtn"
-                        class="bubble-btn"
-                        aria-label="Buka gelembung chat">
-                    <span class="bubble-icon"></span>
-                </button>
+    <!-- OVERLAY DAN MENU SAMPING -->
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
 
-                <button id="menuBtn"
-                        class="menu-btn"
-                        aria-label="Buka menu"
-                        aria-expanded="false">
-                    ☰
-                </button>
+    <aside id="sidebar" class="sidebar"
+      aria-label="Menu navigasi" hidden>
 
-            </div>
-        </header>
+      <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button id="closeMenuBtn" type="button"
+          aria-label="Tutup menu">✕</button>
+      </div>
 
-        <!-- Menu samping -->
-        <div id="menuOverlay" class="menu-overlay" hidden></div>
-        <aside id="sidebar" class="sidebar"
-               aria-label="Menu navigasi" hidden>
+      <button id="newChatBtn" type="button">
+        <span class="menu-icon">＋</span>
+        <span>Obrolan baru</span>
+      </button>
 
-            <div class="sidebar-header">
-                <h2>Menu</h2>
-                <button id="closeMenuBtn"
-                        aria-label="Tutup menu">
-                    ✕
-                </button>
-            </div>
+      <button id="homeMenuBtn" type="button">
+        <span class="menu-icon">⌂</span>
+        <span>Beranda</span>
+      </button>
 
-            
-            <button id="newChatBtn">
-                <span class="menu-icon">＋</span>
-                <span>Obrolan baru</span>
-            </button>
+      <button id="searchBtn" type="button">
+        <span class="menu-icon">⌕</span>
+        <span>Cari obrolan</span>
+      </button>
 
-            <button id="homeMenuBtn">
-                <span class="menu-icon">⌂</span>
-                <span>Beranda</span>
-            </button>
+      <!-- RIWAYAT CHAT -->
+      <section class="history-section">
+        <div class="history-header">
+          <h3>Riwayat obrolan</h3>
+        </div>
 
-            <button id="searchBtn">
-                 <span class="menu-icon">⌕</span>
-                 <span>Cari obrolan</span>
-            </button>
-                     
-         <section class="history-section">
-             <div class="history-header">
-                <h3>Riwayat obrolan</h3>
-             </div>
+        <div id="searchPanel" hidden>
+          <input id="historySearchInput" type="search"
+            placeholder="Cari judul atau isi obrolan..."
+            autocomplete="off"
+            aria-label="Cari riwayat obrolan">
 
-             <div id="searchPanel" hidden>
-                 <input
-                     id="historySearchInput"
-                     type="search"
-                     placeholder="Cari judul atau isi obrolan..."
-                     autocomplete="off"
-                 >
-                 <button id="closeSearchBtn" type="button">
-                     Tutup pencarian
-                 </button>
-             <div id="searchResults"></div>
-         </div>
+          <button id="closeSearchBtn" type="button">
+            Tutup pencarian
+          </button>
+        </div>
 
-         <div id="historyList">
-            <p>Belum ada riwayat obrolan.</p>
-         </div>
-        </section>
+        <div id="historyList">
+          <p>Belum ada riwayat obrolan.</p>
+        </div>
+      </section>
 
-            <section class="settings-section">
-                <h3>Pengaturan</h3>
+      <!-- PENGATURAN -->
+      <section class="settings-section">
+        <h3>Pengaturan</h3>
 
-                <label for="themeSelect">
-                    Tema tampilan
-                </label>
+        <label for="themeSelect">Tema tampilan</label>
+        <select id="themeSelect">
+          <option value="system">Ikuti pengaturan HP</option>
+          <option value="light">Terang</option>
+          <option value="dark">Gelap</option>
+        </select>
 
-                <select id="themeSelect">
-                    <option value="system">
-                        Ikuti pengaturan HP
-                    </option>
-                    <option value="light">
-                        Terang
-                    </option>
-                    <option value="dark">
-                        Gelap
-                    </option>
-                </select>
+        <button id="renameChatBtn" type="button">
+          <span class="menu-icon">✎</span>
+          <span>Edit nama obrolan</span>
+        </button>
 
-                <button id="renameChatBtn">
-                    <span class="menu-icon">✎</span>
-                    <span>Edit nama obrolan</span>
-                </button>
+        <button id="bubbleMenuBtn" type="button">
+          <span class="menu-icon">◉</span>
+          <span>App Bubbles</span>
+        </button>
 
-                <button id="bubbleMenuBtn">
-                    <span class="menu-icon">◉</span>
-                    <span>App Bubbles</span>
-                </button>
-                
-                <button id="profileBtn" class="profile-menu-btn">
-                    <span class="profile-avatar">👤</span>
+        <button id="profileBtn" class="profile-menu-btn"
+          type="button">
+          <span class="profile-avatar">👤</span>
+          <span class="profile-info">
+            <strong>Pengguna</strong>
+            <small>Akun pribadi</small>
+          </span>
+          <span class="profile-arrow">›</span>
+        </button>
+      </section>
+    </aside>
 
-                    <span class="profile-info">
-                        <strong>Pengguna</strong>
-                        <small>Akun pribadi</small>
-                    </span>
+    <!-- AREA UTAMA -->
+    <main id="mainContent">
+      <section id="welcomeScreen" class="welcome-screen">
+        <div class="ai-avatar">AI</div>
+        <h1>Ada yang bisa saya bantu?</h1>
+        <p>Tanyakan apa saja</p>
+      </section>
 
-                    <span class="profile-arrow">›</span>
-                </button>
+      <section id="chatMessages" class="chat-messages"
+        aria-live="polite" aria-label="Pesan obrolan">
+      </section>
+    </main>
 
-            </section>
+    <!-- AREA INPUT -->
+    <footer class="chat-footer">
+      <form id="chatForm">
+        <div class="message-input-area">
 
-        </aside>
+          <label for="fileInput" class="tool-btn attach-btn"
+            aria-label="Pilih file" title="Lampirkan file">
+            +
+          </label>
 
-        <!-- Konten chat -->
-        <main id="mainContent">
+          <input id="fileInput" type="file"
+            accept="image/*,.pdf,.txt,.doc,.docx" hidden>
 
-            <section id="welcomeScreen"
-                     class="welcome-screen">
+          <textarea id="messageInput" rows="1"
+            placeholder="Tulis pesan..."
+            aria-label="Tulis pesan"></textarea>
 
-                <div class="ai-avatar">AI</div>
-
-                <h1>Ada yang bisa saya bantu?</h1>
-
-                <p>
-                    Tanyakan apa saja
-                </p>
-
-            </section>
-
-            <section id="chatMessages"
-                     class="chat-messages"
-                     aria-live="polite"
-                     aria-label="Pesan obrolan">
-            </section>
-
-        </main>
-
-        <!-- Area input pesan -->
-        <footer class="chat-footer">
-
-            <form id="chatForm">
-
-                <div class="message-input-area">
-
-                  <label for="fileInput"
-                         class="tool-btn attach-btn"
-                         aria-label="Pilih file">
-                       +
-                </label>
-
-             <input id="fileInput"
-                    type="file"
-                    accept="image/*,.pdf,.txt,.doc,.docx"
-                    hidden>
-
-        <textarea id="messageInput"
-                  rows="1"
-                  placeholder="Tulis pesan..."
-                  aria-label="Tulis pesan"></textarea>
-
-    <button id="voiceBtn"
-            type="button"
+          <button id="voiceBtn" type="button"
             class="tool-btn voice-btn"
-            aria-label="Rekam voice note">
-        🎙️
-    </button>
+            aria-label="Fitur suara" title="Fitur suara">
+            🎙️
+          </button>
 
-    <button id="sendBtn"
-            type="submit"
-            aria-label="Kirim pesan">
-        ↑
-    </button>
+          <button id="sendBtn" type="submit"
+            aria-label="Kirim pesan" title="Kirim pesan">
+            ↑
+          </button>
+        </div>
 
-</div>
+        <p id="fileStatus" class="file-status"
+          aria-live="polite"></p>
+      </form>
+    </footer>
 
-    <!-- Gelembung di dalam halaman website -->
-    <button id="floatingBubble"
-            class="floating-bubble"
-            aria-label="Buka obrolan mengambang"
-            hidden>
-        AI
-    </button>
+  </div>
 
-    <!-- JavaScript -->
-   <script src="script.js"></script>
+  <!-- GELEMBUNG CHAT MENGAMBANG -->
+  <button id="floatingBubble" class="floating-bubble"
+    type="button" aria-label="Buka obrolan mengambang" hidden>
+    AI
+  </button>
 
+  <!-- JENDELA CHAT MENGAMBANG -->
+  <section id="bubbleWindow" class="bubble-window"
+    aria-label="Obrolan mengambang" hidden>
+
+    <header class="bubble-window-header">
+      <div class="bubble-window-title">
+        <span class="bubble-window-avatar">AI</span>
+        <div>
+          <strong>APP AI</strong>
+          <small>Asisten pribadi</small>
+        </div>
+      </div>
+
+      <button id="closeBubbleWindowBtn" type="button"
+        aria-label="Tutup jendela chat">✕</button>
+    </header>
+
+    <div id="bubbleMessages" class="bubble-messages"
+      aria-live="polite">
+    </div>
+
+    <form id="bubbleForm" class="bubble-form">
+      <textarea id="bubbleInput" rows="1"
+        placeholder="Tulis pesan..."
+        aria-label="Tulis pesan gelembung"></textarea>
+
+      <button id="bubbleSendBtn" type="submit"
+        aria-label="Kirim pesan">↑</button>
+    </form>
+  </section>
+
+  <script src="script.js"></script>
 </body>
 </html>

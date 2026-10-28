@@ -982,3 +982,23 @@ body[data-theme="dark"] {
     border-radius: 0 0 14px 14px;
     padding-top: 18px;
 }
+/* Latar transparan saat menu terbuka */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.menu-overlay[hidden] {
+    display: none !important;
+}
+
+/* Menu berada di atas overlay */
+
+.sidebar {
+    z-index: 20;
+}

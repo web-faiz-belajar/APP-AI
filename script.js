@@ -30,6 +30,11 @@ const historyList = document.getElementById("historyList");
 const fileInput = document.getElementById("fileInput");
 const fileStatus = document.getElementById("fileStatus");
 
+const historySearchBox = document.getElementById("historySearchBox");
+const historySearchInput = document.getElementById("historySearchInput");
+const closeHistorySearch = document.getElementById("closeHistorySearch");
+
+
 /* =================================
    2. DATA OBROLAN
 ================================= */
@@ -387,37 +392,66 @@ chatForm.addEventListener("submit", event => {
     messageInput.focus();
 });
 
+
 /* =================================
    8. PENCARIAN RIWAYAT
 ================================= */
 
-searchBtn.addEventListener("click", () => {
-    const keyword = prompt("Cari obrolan:");
-
-    if (keyword === null) return;
-
+function searchConversations(keyword) {
     const query = keyword.trim().toLowerCase();
-
-    if (!query) return;
 
     const results = conversations.filter(chat =>
         chat.title.toLowerCase().includes(query) ||
         chat.messages.some(message =>
-            message.text.toLowerCase().includes(query)
+            String(message.text || "").toLowerCase().includes(query)
         )
     );
 
+    historyList.replaceChildren();
+
     if (results.length === 0) {
-        alert("Obrolan tidak ditemukan.");
+        const empty = document.createElement("p");
+        empty.textContent = "Obrolan tidak ditemukan.";
+        historyList.appendChild(empty);
         return;
     }
 
-    activeChatId = results[0].id;
+    results.forEach(chat => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "history-item";
+        button.textContent = chat.title;
 
-    renderHistory();
-    renderMessages();
-    closeMenu();
+        if (chat.id === activeChatId) {
+            button.setAttribute("aria-current", "true");
+        }
+
+        button.addEventListener("click", () => {
+            activeChatId = chat.id;
+            renderHistory();
+            renderMessages();
+            closeMenu();
+        });
+
+        historyList.appendChild(button);
+    });
+}
+
+searchBtn.addEventListener("click", () => {
+    historySearchBox.hidden = false;
+    historySearchInput.focus();
 });
+
+historySearchInput.addEventListener("input", () => {
+    searchConversations(historySearchInput.value);
+});
+
+closeHistorySearch.addEventListener("click", () => {
+    historySearchInput.value = "";
+    historySearchBox.hidden = true;
+    renderHistory();
+});
+
 
 /* =================================
    9. GELEMBUNG DALAM WEBSITE

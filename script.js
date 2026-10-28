@@ -1,524 +1,742 @@
 
 "use strict";
 
-/* =================================
+/* ========================================
    1. MENGAMBIL ELEMEN HTML
-================================= */
+======================================== */
 
-const menuBtn = document.getElementById("menuBtn");
-const closeMenuBtn = document.getElementById("closeMenuBtn");
-const sidebar = document.getElementById("sidebar");
+const $ = (id) => document.getElementById(id);
 
-const homeBtn = document.getElementById("homeBtn");
-const homeMenuBtn = document.getElementById("homeMenuBtn");
-const newChatBtn = document.getElementById("newChatBtn");
+const menuBtn = $("menuBtn");
+const closeMenuBtn = $("closeMenuBtn");
+const menuOverlay = $("menuOverlay");
+const sidebar = $("sidebar");
 
-const searchBtn = document.getElementById("searchBtn");
-const renameChatBtn = document.getElementById("renameChatBtn");
-const themeSelect = document.getElementById("themeSelect");
+const homeBtn = $("homeBtn");
+const homeMenuBtn = $("homeMenuBtn");
+const newChatBtn = $("newChatBtn");
+const searchBtn = $("searchBtn");
+const renameChatBtn = $("renameChatBtn");
 
-const bubbleBtn = document.getElementById("bubbleBtn");
-const bubbleMenuBtn = document.getElementById("bubbleMenuBtn");
-const floatingBubble = document.getElementById("floatingBubble");
+const themeSelect = $("themeSelect");
 
-const chatForm = document.getElementById("chatForm");
-const messageInput = document.getElementById("messageInput");
-const chatMessages = document.getElementById("chatMessages");
-const welcomeScreen = document.getElementById("welcomeScreen");
+const bubbleBtn = $("bubbleBtn");
+const bubbleMenuBtn = $("bubbleMenuBtn");
+const floatingBubble = $("floatingBubble");
+const bubbleWindow = $("bubbleWindow");
+const closeBubbleWindowBtn = $("closeBubbleWindowBtn");
+const bubbleMessages = $("bubbleMessages");
+const bubbleForm = $("bubbleForm");
+const bubbleInput = $("bubbleInput");
 
-const historyList = document.getElementById("historyList");
-const fileInput = document.getElementById("fileInput");
-const fileStatus = document.getElementById("fileStatus");
+const chatForm = $("chatForm");
+const messageInput = $("messageInput");
+const chatMessages = $("chatMessages");
+const welcomeScreen = $("welcomeScreen");
 
-const historySearchBox = document.getElementById("historySearchBox");
-const historySearchInput = document.getElementById("historySearchInput");
-const closeHistorySearch = document.getElementById("closeHistorySearch");
+const historyList = $("historyList");
+const searchPanel = $("searchPanel");
+const historySearchInput = $("historySearchInput");
+const closeSearchBtn = $("closeSearchBtn");
 
+const fileInput = $("fileInput");
+const fileStatus = $("fileStatus");
+const voiceBtn = $("voiceBtn");
 
-/* =================================
-   2. DATA OBROLAN
-================================= */
+/* ========================================
+   2. DATA DAN PENYIMPANAN
+======================================== */
+
+const CHAT_STORAGE_KEY = "faizAIConversations";
+const THEME_STORAGE_KEY = "faizAITheme";
 
 let conversations = [];
 let activeChatId = null;
 
-function createChat() {
-    const chat = {
-        id: Date.now().toString() +
-            Math.random().toString(36).slice(2, 7),
-        title: "Obrolan baru",
-        messages: [],
-        updatedAt: Date.now()
-    };
-
-    conversations.unshift(chat);
-    activeChatId = chat.id;
-
-    renderHistory();
-    renderMessages();
-
-    return chat;
+function makeId() {
+  return Date.now().toString() +
+    Math.random().toString(36).slice(2, 8);
 }
 
 function getActiveChat() {
-    return conversations.find(
-        chat => chat.id === activeChatId
-    );
+  return conversations.find(
+    (chat) => chat.id === activeChatId
+  );
 }
 
-/* =================================
-   3. MENU SAMPING
-================================= */
+function createChat() {
+  const chat = {
+    id: makeId(),
+    title: "Obrolan baru",
+    messages: [],
+    updatedAt: Date.now()
+  };
 
-const menuOverlay = document.getElementById("menuOverlay");
+  conversations.unshift(chat);
+  activeChatId = chat.id;
 
-function openMenu() {
-    sidebar.hidden = false;
-    menuOverlay.hidden = false;
-    menuBtn.setAttribute("aria-expanded", "true");
+  saveConversations();
+  renderHistory();
+  renderMessages();
+  renderBubbleMessages();
+
+  return chat;
 }
-
-function closeMenu() {
-    sidebar.hidden = true;
-    menuOverlay.hidden = true;
-    menuBtn.setAttribute("aria-expanded", "false");
-}
-
-menuOverlay.addEventListener("click", closeMenu);
-menuBtn.addEventListener("click", openMenu);
-closeMenuBtn.addEventListener("click", closeMenu);
-
-homeBtn.addEventListener("click", () => {
-    closeMenu();
-    messageInput.focus();
-});
-
-homeMenuBtn.addEventListener("click", () => {
-    closeMenu();
-    messageInput.focus();
-});
-
-document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-        closeMenu();
-    }
-});
-
-/* =================================
-   4. TEMA TERANG, GELAP, OTOMATIS
-================================= */
-
-const systemTheme = window.matchMedia(
-    "(prefers-color-scheme: dark)"
-);
-
-function applyTheme(theme) {
-    const actualTheme =
-        theme === "system"
-            ? (systemTheme.matches ? "dark" : "light")
-            : theme;
-
-    document.body.dataset.theme = actualTheme;
-
-    const themeColor = actualTheme === "dark"
-        ? "#0d111b"
-        : "#f5f7fb";
-
-    const themeMeta = document.querySelector(
-    'meta[name="theme-color"]'
-);
-
-if (themeMeta) {
-    themeMeta.setAttribute("content", themeColor);
-}
-
-function loadTheme() {
-    const savedTheme =
-        localStorage.getItem("faizAITheme") || "system";
-
-    themeSelect.value = savedTheme;
-    applyTheme(savedTheme);
-}
-
-themeSelect.addEventListener("change", () => {
-    const theme = themeSelect.value;
-
-    localStorage.setItem("faizAITheme", theme);
-    applyTheme(theme);
-});
-
-systemTheme.addEventListener("change", () => {
-    if (themeSelect.value === "system") {
-        applyTheme("system");
-    }
-});
-
-/* =================================
-   5. RIWAYAT OBROLAN
-================================= */
 
 function saveConversations() {
-    try {
-        localStorage.setItem(
-            "faizAIConversations",
-            JSON.stringify(conversations)
-        );
-    } catch (error) {
-        alert(
-            "Penyimpanan penuh atau tidak tersedia. " +
-            "Coba hapus beberapa obrolan."
-        );
-    }
+  try {
+    localStorage.setItem(
+      CHAT_STORAGE_KEY,
+      JSON.stringify(conversations)
+    );
+  } catch (error) {
+    console.error("Gagal menyimpan obrolan:", error);
+    alert(
+      "Obrolan tidak bisa disimpan. Periksa ruang penyimpanan browser HP."
+    );
+  }
 }
 
 function loadConversations() {
-    try {
-        const saved = localStorage.getItem(
-            "faizAIConversations"
+  try {
+    const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+        conversations = parsed.filter((chat) =>
+          chat &&
+          typeof chat.id === "string" &&
+          typeof chat.title === "string" &&
+          Array.isArray(chat.messages)
         );
-
-        if (saved) {
-            const parsed = JSON.parse(saved);
-
-            if (Array.isArray(parsed)) {
-                conversations = parsed.filter(chat =>
-                    chat &&
-                    typeof chat.id === "string" &&
-                    typeof chat.title === "string" &&
-                    Array.isArray(chat.messages)
-                );
-            }
-        }
-    } catch (error) {
-        conversations = [];
+      }
     }
+  } catch (error) {
+    console.error("Gagal membaca riwayat:", error);
+    conversations = [];
+  }
 
-    if (conversations.length > 0) {
-        activeChatId = conversations[0].id;
-    } else {
-        createChat();
-    }
+  if (conversations.length > 0) {
+    activeChatId = conversations[0].id;
+  } else {
+    createChat();
+  }
 
-    renderHistory();
-    renderMessages();
+  renderHistory();
+  renderMessages();
+  renderBubbleMessages();
 }
 
-function renderHistory() {
-    historyList.replaceChildren();
+/* ========================================
+   3. MENU SAMPING
+======================================== */
 
-    if (conversations.length === 0) {
-        const empty = document.createElement("p");
-        empty.textContent = "Belum ada riwayat obrolan.";
-        historyList.appendChild(empty);
-        return;
+function openMenu() {
+  sidebar.hidden = false;
+  menuOverlay.hidden = false;
+  menuBtn.setAttribute("aria-expanded", "true");
+}
+
+function closeMenu() {
+  sidebar.hidden = true;
+  menuOverlay.hidden = true;
+  menuBtn.setAttribute("aria-expanded", "false");
+}
+
+menuBtn.addEventListener("click", openMenu);
+closeMenuBtn.addEventListener("click", closeMenu);
+menuOverlay.addEventListener("click", closeMenu);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeMenu();
+    closeBubbleWindow();
+  }
+});
+
+function goHome() {
+  closeMenu();
+  messageInput.focus();
+}
+
+homeBtn.addEventListener("click", goHome);
+homeMenuBtn.addEventListener("click", goHome);
+
+newChatBtn.addEventListener("click", () => {
+  createChat();
+  closeMenu();
+  messageInput.focus();
+});
+
+/* ========================================
+   4. TEMA TERANG DAN GELAP
+======================================== */
+
+const systemTheme = window.matchMedia(
+  "(prefers-color-scheme: dark)"
+);
+
+function applyTheme(theme) {
+  const actualTheme =
+    theme === "system"
+      ? (systemTheme.matches ? "dark" : "light")
+      : theme;
+
+  document.body.dataset.theme = actualTheme;
+
+  const themeMeta = document.querySelector(
+    'meta[name="theme-color"]'
+  );
+
+  if (themeMeta) {
+    themeMeta.setAttribute(
+      "content",
+      actualTheme === "dark" ? "#0b1020" : "#f3f5fb"
+    );
+  }
+}
+
+function loadTheme() {
+  let savedTheme = "system";
+
+  try {
+    savedTheme =
+      localStorage.getItem(THEME_STORAGE_KEY) || "system";
+  } catch (error) {
+    console.warn("Pengaturan tema tidak bisa dibaca.");
+  }
+
+  if (!["system", "light", "dark"].includes(savedTheme)) {
+    savedTheme = "system";
+  }
+
+  themeSelect.value = savedTheme;
+  applyTheme(savedTheme);
+}
+
+themeSelect.addEventListener("change", () => {
+  const theme = themeSelect.value;
+  applyTheme(theme);
+
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (error) {
+    console.warn("Pengaturan tema tidak bisa disimpan.");
+  }
+});
+
+if (systemTheme.addEventListener) {
+  systemTheme.addEventListener("change", () => {
+    if (themeSelect.value === "system") {
+      applyTheme("system");
+    }
+  });
+}
+
+/* ========================================
+   5. MENAMPILKAN RIWAYAT
+======================================== */
+
+function renderHistory(list = conversations) {
+  historyList.replaceChildren();
+
+  if (list.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "Belum ada obrolan yang cocok.";
+    historyList.appendChild(empty);
+    return;
+  }
+
+  list.forEach((chat) => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "history-item";
+    button.textContent = chat.title;
+    button.title = chat.title;
+
+    if (chat.id === activeChatId) {
+      button.setAttribute("aria-current", "true");
     }
 
-    conversations.forEach(chat => {
-        const button = document.createElement("button");
-
-        button.type = "button";
-        button.className = "history-item";
-        button.textContent = chat.title;
-
-        if (chat.id === activeChatId) {
-            button.setAttribute("aria-current", "true");
-        }
-
-        // Klik biasa: buka obrolan
-        button.addEventListener("click", () => {
-            activeChatId = chat.id;
-            renderHistory();
-            renderMessages();
-            closeMenu();
-        });
-
-        // Tekan dan tahan: tawarkan penghapusan
-        let holdTimer;
-        let longPressTriggered = false;
-
-        button.addEventListener("contextmenu", event => {
-            event.preventDefault();
-        });
-
-        button.addEventListener("pointerdown", () => {
-            longPressTriggered = false;
-
-            holdTimer = setTimeout(() => {
-                longPressTriggered = true;
-                deleteConversation(chat.id);
-            }, 650);
-        });
-
-        ["pointerup", "pointerleave", "pointercancel"].forEach(eventName => {
-            button.addEventListener(eventName, () => {
-                clearTimeout(holdTimer);
-            });
-        });
-
-        button.addEventListener("click", event => {
-            if (longPressTriggered) {
-                event.stopImmediatePropagation();
-                event.preventDefault();
-                longPressTriggered = false;
-            }
-        }, true);
-
-        historyList.appendChild(button);
+    button.addEventListener("click", () => {
+      activeChatId = chat.id;
+      renderHistory();
+      renderMessages();
+      renderBubbleMessages();
+      closeMenu();
     });
+
+    // Tekan lama pada riwayat untuk menghapusnya.
+    let holdTimer = null;
+    let longPressTriggered = false;
+
+    button.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    });
+
+    button.addEventListener("pointerdown", () => {
+      longPressTriggered = false;
+
+      holdTimer = setTimeout(() => {
+        longPressTriggered = true;
+        deleteConversation(chat.id);
+      }, 750);
+    });
+
+    ["pointerup", "pointerleave", "pointercancel"].forEach(
+      (eventName) => {
+        button.addEventListener(eventName, () => {
+          clearTimeout(holdTimer);
+        });
+      }
+    );
+
+    button.addEventListener(
+      "click",
+      (event) => {
+        if (longPressTriggered) {
+          event.stopImmediatePropagation();
+          event.preventDefault();
+          longPressTriggered = false;
+        }
+      },
+      true
+    );
+
+    historyList.appendChild(button);
+  });
 }
 
 function deleteConversation(chatId) {
-    const chat = conversations.find(item => item.id === chatId);
+  const chat = conversations.find(
+    (item) => item.id === chatId
+  );
 
-    if (!chat) return;
+  if (!chat) return;
 
-    const confirmed = confirm(
-        `Hapus obrolan "${chat.title}"? Obrolan ini tidak bisa dipulihkan.`
-    );
+  const confirmed = confirm(
+    `Hapus obrolan "${chat.title}"?`
+  );
 
-    if (!confirmed) return;
+  if (!confirmed) return;
 
-    conversations = conversations.filter(item => item.id !== chatId);
+  conversations = conversations.filter(
+    (item) => item.id !== chatId
+  );
 
-    if (activeChatId === chatId) {
-        activeChatId = conversations.length > 0
-            ? conversations[0].id
-            : null;
-    }
+  if (activeChatId === chatId) {
+    activeChatId =
+      conversations.length > 0
+        ? conversations[0].id
+        : null;
+  }
 
-    saveConversations();
-    renderHistory();
-    renderMessages();
+  if (!activeChatId) {
+    createChat();
+    return;
+  }
+
+  saveConversations();
+  renderHistory();
+  renderMessages();
+  renderBubbleMessages();
 }
+
+/* ========================================
+   6. MENAMPILKAN PESAN CHAT UTAMA
+======================================== */
 
 function renderMessages() {
-    const chat = getActiveChat();
+  const chat = getActiveChat();
 
-    chatMessages.replaceChildren();
+  chatMessages.replaceChildren();
 
-    welcomeScreen.hidden =
-        Boolean(chat && chat.messages.length > 0);
+  welcomeScreen.hidden = Boolean(
+    chat && chat.messages.length > 0
+  );
 
-    if (!chat) return;
+  if (!chat) return;
 
-    chat.messages.forEach(message => {
-        const bubble = document.createElement("div");
+  chat.messages.forEach((message) => {
+    const bubble = document.createElement("div");
 
-        bubble.className =
-            "chat-message " +
-            (message.role === "user" ? "user" : "ai");
+    bubble.className =
+      "chat-message " +
+      (message.role === "user" ? "user" : "ai");
 
-        // textContent mencegah teks pengguna
-        // ditafsirkan sebagai kode HTML.
-        bubble.textContent = message.text;
+    bubble.textContent = message.text || "";
+    chatMessages.appendChild(bubble);
+  });
 
-        chatMessages.appendChild(bubble);
-    });
-
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-/* =================================
-   6. OBROLAN BARU DAN EDIT NAMA
-================================= */
+function addMessage(role, text) {
+  let chat = getActiveChat();
 
-newChatBtn.addEventListener("click", () => {
-    createChat();
-    closeMenu();
-    messageInput.focus();
+  if (!chat) {
+    chat = createChat();
+  }
+
+  chat.messages.push({
+    role,
+    text,
+    time: Date.now()
+  });
+
+  if (
+    role === "user" &&
+    chat.title === "Obrolan baru" &&
+    chat.messages.filter((item) => item.role === "user").length === 1
+  ) {
+    chat.title = text.trim().slice(0, 35) || "Obrolan baru";
+  }
+
+  chat.updatedAt = Date.now();
+
+  saveConversations();
+  renderHistory();
+  renderMessages();
+  renderBubbleMessages();
+}
+
+/* ========================================
+   7. MENGIRIM PESAN UTAMA
+======================================== */
+
+chatForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const text = messageInput.value.trim();
+
+  if (!text) return;
+
+  addMessage("user", text);
+
+  messageInput.value = "";
+  resizeTextarea(messageInput);
+  messageInput.focus();
 });
+
+messageInput.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.isComposing
+  ) {
+    event.preventDefault();
+    chatForm.requestSubmit();
+  }
+});
+
+/* ========================================
+   8. EDIT NAMA OBROLAN
+======================================== */
 
 renameChatBtn.addEventListener("click", () => {
-    const chat = getActiveChat();
+  const chat = getActiveChat();
 
-    if (!chat) return;
+  if (!chat) return;
 
-    const newTitle = prompt(
-        "Masukkan nama obrolan:",
-        chat.title
-    );
+  const newTitle = prompt(
+    "Masukkan nama obrolan:",
+    chat.title
+  );
 
-    if (newTitle === null) return;
+  if (newTitle === null) return;
 
-    const cleanedTitle = newTitle.trim();
+  const cleanedTitle = newTitle.trim();
 
-    if (!cleanedTitle) {
-        alert("Nama obrolan tidak boleh kosong.");
-        return;
-    }
+  if (!cleanedTitle) {
+    alert("Nama obrolan tidak boleh kosong.");
+    return;
+  }
 
-    chat.title = cleanedTitle.slice(0, 80);
-    chat.updatedAt = Date.now();
+  chat.title = cleanedTitle.slice(0, 80);
+  chat.updatedAt = Date.now();
 
-    saveConversations();
-    renderHistory();
-    closeMenu();
+  saveConversations();
+  renderHistory();
+  closeMenu();
 });
 
-/* =================================
-   7. MENGIRIM PESAN DASAR
-================================= */
-
-chatForm.addEventListener("submit", event => {
-    event.preventDefault();
-
-    const text = messageInput.value.trim();
-
-    if (!text) return;
-
-    let chat = getActiveChat();
-
-    if (!chat) {
-        chat = createChat();
-    }
-
-    chat.messages.push({
-        role: "user",
-        text: text,
-        time: Date.now()
-    });
-
-    if (
-        chat.title === "Obrolan baru" &&
-        chat.messages.length === 1
-    ) {
-        chat.title = text.slice(0, 35);
-    }
-
-    chat.updatedAt = Date.now();
-
-    saveConversations();
-    renderHistory();
-    renderMessages();
-
-    messageInput.value = "";
-    messageInput.focus();
-});
-
-
-/* =================================
-   8. PENCARIAN RIWAYAT
-================================= */
+/* ========================================
+   9. PENCARIAN RIWAYAT
+======================================== */
 
 function searchConversations(keyword) {
-    const query = keyword.trim().toLowerCase();
+  const query = keyword.trim().toLowerCase();
 
-    const results = conversations.filter(chat =>
-        chat.title.toLowerCase().includes(query) ||
-        chat.messages.some(message =>
-            String(message.text || "").toLowerCase().includes(query)
-        )
+  if (!query) {
+    renderHistory();
+    return;
+  }
+
+  const results = conversations.filter((chat) => {
+    const titleMatches = chat.title
+      .toLowerCase()
+      .includes(query);
+
+    const messageMatches = chat.messages.some((message) =>
+      String(message.text || "")
+        .toLowerCase()
+        .includes(query)
     );
 
-    historyList.replaceChildren();
+    return titleMatches || messageMatches;
+  });
 
-    if (results.length === 0) {
-        const empty = document.createElement("p");
-        empty.textContent = "Obrolan tidak ditemukan.";
-        historyList.appendChild(empty);
-        return;
-    }
-
-    results.forEach(chat => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "history-item";
-        button.textContent = chat.title;
-
-        if (chat.id === activeChatId) {
-            button.setAttribute("aria-current", "true");
-        }
-
-        button.addEventListener("click", () => {
-            activeChatId = chat.id;
-            renderHistory();
-            renderMessages();
-            closeMenu();
-        });
-
-        historyList.appendChild(button);
-    });
+  renderHistory(results);
 }
 
 searchBtn.addEventListener("click", () => {
-    historySearchBox.hidden = false;
-    historySearchInput.focus();
+  searchPanel.hidden = false;
+  historySearchInput.focus();
 });
 
 historySearchInput.addEventListener("input", () => {
-    searchConversations(historySearchInput.value);
+  searchConversations(historySearchInput.value);
 });
 
-closeHistorySearch.addEventListener("click", () => {
-    historySearchInput.value = "";
-    historySearchBox.hidden = true;
-    renderHistory();
+closeSearchBtn.addEventListener("click", () => {
+  historySearchInput.value = "";
+  searchPanel.hidden = true;
+  renderHistory();
 });
 
+/* ========================================
+   10. GELEMBUNG CHAT
+======================================== */
 
-/* =================================
-   9. GELEMBUNG DALAM WEBSITE
-================================= */
+function toggleFloatingBubble() {
+  floatingBubble.hidden = !floatingBubble.hidden;
 
-function toggleBubble() {
-    floatingBubble.hidden = !floatingBubble.hidden;
+  if (floatingBubble.hidden) {
+    closeBubbleWindow();
+  }
 }
 
-bubbleBtn.addEventListener("click", toggleBubble);
+function openBubbleWindow() {
+  floatingBubble.hidden = false;
+  bubbleWindow.hidden = false;
+  renderBubbleMessages();
+  bubbleInput.focus();
+}
+
+function closeBubbleWindow() {
+  bubbleWindow.hidden = true;
+}
+
+bubbleBtn.addEventListener("click", toggleFloatingBubble);
 
 bubbleMenuBtn.addEventListener("click", () => {
-    toggleBubble();
-    closeMenu();
+  toggleFloatingBubble();
+  closeMenu();
 });
 
-floatingBubble.addEventListener("click", () => {
-    floatingBubble.hidden = true;
-    messageInput.focus();
+floatingBubble.addEventListener("click", openBubbleWindow);
+
+closeBubbleWindowBtn.addEventListener(
+  "click",
+  closeBubbleWindow
+);
+
+/* ========================================
+   11. PESAN DI JENDELA GELEMBUNG
+======================================== */
+
+function renderBubbleMessages() {
+  const chat = getActiveChat();
+
+  bubbleMessages.replaceChildren();
+
+  if (!chat) return;
+
+  chat.messages.forEach((message) => {
+    const bubble = document.createElement("div");
+
+    bubble.className =
+      "bubble-message " +
+      (message.role === "user" ? "user" : "ai");
+
+    bubble.textContent = message.text || "";
+    bubbleMessages.appendChild(bubble);
+  });
+
+  bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
+}
+
+bubbleForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const text = bubbleInput.value.trim();
+
+  if (!text) return;
+
+  addMessage("user", text);
+
+  bubbleInput.value = "";
+  resizeTextarea(bubbleInput);
+  bubbleInput.focus();
 });
 
-/* =================================
-   10. PILIH FILE DASAR
-================================= */
+bubbleInput.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.isComposing
+  ) {
+    event.preventDefault();
+    bubbleForm.requestSubmit();
+  }
+});
+
+/* ========================================
+   12. MEMINDAHKAN GELEMBUNG
+======================================== */
+
+let dragState = null;
+
+floatingBubble.addEventListener("pointerdown", (event) => {
+  if (event.button !== 0) return;
+
+  const rect = floatingBubble.getBoundingClientRect();
+
+  dragState = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    left: rect.left,
+    top: rect.top,
+    moved: false
+  };
+
+  floatingBubble.setPointerCapture(event.pointerId);
+});
+
+floatingBubble.addEventListener("pointermove", (event) => {
+  if (!dragState) return;
+  if (event.pointerId !== dragState.pointerId) return;
+
+  const dx = event.clientX - dragState.startX;
+  const dy = event.clientY - dragState.startY;
+
+  if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+    dragState.moved = true;
+  }
+
+  if (!dragState.moved) return;
+
+  const maxLeft = window.innerWidth - floatingBubble.offsetWidth;
+  const maxTop = window.innerHeight - floatingBubble.offsetHeight;
+
+  const left = Math.max(
+    0,
+    Math.min(maxLeft, dragState.left + dx)
+  );
+
+  const top = Math.max(
+    0,
+    Math.min(maxTop, dragState.top + dy)
+  );
+
+  floatingBubble.style.left = `${left}px`;
+  floatingBubble.style.top = `${top}px`;
+  floatingBubble.style.right = "auto";
+  floatingBubble.style.bottom = "auto";
+});
+
+floatingBubble.addEventListener("pointerup", () => {
+  if (dragState && dragState.moved) {
+    // Mencegah klik membuka jendela setelah gelembung digeser.
+    floatingBubble.dataset.dragged = "true";
+  }
+
+  dragState = null;
+});
+
+floatingBubble.addEventListener("pointercancel", () => {
+  dragState = null;
+});
+
+floatingBubble.addEventListener(
+  "click",
+  (event) => {
+    if (floatingBubble.dataset.dragged === "true") {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      delete floatingBubble.dataset.dragged;
+    }
+  },
+  true
+);
+
+/* ========================================
+   13. MEMILIH FILE
+======================================== */
 
 fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
+  const file = fileInput.files[0];
 
-    if (!file) {
-        fileStatus.textContent = "";
-        return;
-    }
+  if (!file) {
+    fileStatus.textContent = "";
+    return;
+  }
 
-    const maxSize = 10 * 1024 * 1024;
+  const maxSize = 10 * 1024 * 1024;
 
-    if (file.size > maxSize) {
-        fileStatus.textContent =
-            "File melebihi batas demo 10 MB.";
-
-        fileInput.value = "";
-        return;
-    }
-
+  if (file.size > maxSize) {
     fileStatus.textContent =
-        "File dipilih: " + file.name +
-        ". Pengiriman ke AI belum diaktifkan.";
+      "File melebihi batas demo 10 MB.";
+
+    fileInput.value = "";
+    return;
+  }
+
+  fileStatus.textContent =
+    `File dipilih: ${file.name}. ` +
+    "Pengiriman file ke AI belum diaktifkan.";
 });
 
-/* =================================
-   11. TOMBOL VOICE SEMENTARA
-================================= */
-
-const voiceBtn = document.getElementById("voiceBtn");
+/* ========================================
+   14. TOMBOL SUARA
+======================================== */
 
 voiceBtn.addEventListener("click", () => {
-    alert(
-        "Fitur rekam voice note akan dibuat " +
-        "pada tahap berikutnya."
-    );
+  alert(
+    "Fitur suara belum diaktifkan. " +
+    "Tombol ini akan dikembangkan pada tahap berikutnya."
+  );
 });
 
-/* =================================
-   12. MULAI APLIKASI
-================================= */
+/* ========================================
+   15. UKURAN INPUT OTOMATIS
+======================================== */
+
+function resizeTextarea(textarea) {
+  textarea.style.height = "auto";
+
+  const maxHeight = parseInt(
+    getComputedStyle(textarea).maxHeight,
+    10
+  ) || 130;
+
+  textarea.style.height =
+    Math.min(textarea.scrollHeight, maxHeight) + "px";
+}
+
+[messageInput, bubbleInput].forEach((textarea) => {
+  textarea.addEventListener("input", () => {
+    resizeTextarea(textarea);
+  });
+});
+
+/* ========================================
+   16. MEMULAI APLIKASI
+======================================== */
 
 loadTheme();
 loadConversations();

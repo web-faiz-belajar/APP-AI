@@ -216,6 +216,7 @@ function renderHistory() {
             button.setAttribute("aria-current", "true");
         }
 
+        // Klik biasa: buka obrolan
         button.addEventListener("click", () => {
             activeChatId = chat.id;
             renderHistory();
@@ -223,8 +224,70 @@ function renderHistory() {
             closeMenu();
         });
 
+        // Tekan dan tahan: tawarkan penghapusan
+        let holdTimer;
+        let longPressTriggered = false;
+
+        button.addEventListener("contextmenu", event => {
+            event.preventDefault();
+            deleteConversation(chat.id);
+        });
+
+        button.addEventListener("pointerdown", () => {
+            longPressTriggered = false;
+
+            holdTimer = setTimeout(() => {
+                longPressTriggered = true;
+                deleteConversation(chat.id);
+            }, 650);
+        });
+
+        ["pointerup", "pointerleave", "pointercancel"].forEach(eventName => {
+            button.addEventListener(eventName, () => {
+                clearTimeout(holdTimer);
+            });
+        });
+
+        button.addEventListener("click", event => {
+            if (longPressTriggered) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+                longPressTriggered = false;
+            }
+        }, true);
+
         historyList.appendChild(button);
     });
+}
+
+function deleteConversation(chatId) {
+    const chat = conversations.find(item => item.id === chatId);
+
+    if (!chat) return;
+
+    const confirmed = confirm(
+        `Hapus obrolan "${chat.title}"? Obrolan ini tidak bisa dipulihkan.`
+    );
+
+    if (!confirmed) return;
+
+    conversations = conversations.filter(item => item.id !== chatId);
+
+    // Jika obrolan aktif dihapus, pilih obrolan lain
+    if (activeChatId === chatId) {
+        activeChatId = conversations.length > 0
+            ? conversations[0].id
+            : null;
+    }
+
+    // Simpan perubahan ke penyimpanan browser
+    localStorage.setItem(
+        "faizAI_conversations",
+        JSON.stringify(conversations)
+    );
+
+    renderHistory();
+    renderMessages();
 }
 
 function renderMessages() {

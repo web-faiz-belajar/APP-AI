@@ -124,9 +124,12 @@ function applyTheme(theme) {
         ? "#0d111b"
         : "#f5f7fb";
 
-    document.querySelector(
-        'meta[name="theme-color"]'
-    ).setAttribute("content", themeColor);
+    const themeMeta = document.querySelector(
+    'meta[name="theme-color"]'
+);
+
+if (themeMeta) {
+    themeMeta.setAttribute("content", themeColor);
 }
 
 function loadTheme() {

@@ -72,15 +72,28 @@
                  <span class="menu-icon">⌕</span>
                  <span>Cari obrolan</span>
             </button>
-            
+                     
          <section class="history-section">
              <div class="history-header">
                 <h3>Riwayat obrolan</h3>
              </div>
 
-             <div id="historyList">
-               <p>Belum ada riwayat obrolan.</p>
-             </div>
+             <div id="searchPanel" hidden>
+                 <input
+                     id="historySearchInput"
+                     type="search"
+                     placeholder="Cari judul atau isi obrolan..."
+                     autocomplete="off"
+                 >
+                 <button id="closeSearchBtn" type="button">
+                     Tutup pencarian
+                 </button>
+             <div id="searchResults"></div>
+         </div>
+
+         <div id="historyList">
+            <p>Belum ada riwayat obrolan.</p>
+         </div>
         </section>
 
             <section class="settings-section">

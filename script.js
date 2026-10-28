@@ -65,16 +65,21 @@ function getActiveChat() {
    3. MENU SAMPING
 ================================= */
 
+const menuOverlay = document.getElementById("menuOverlay");
+
 function openMenu() {
     sidebar.hidden = false;
+    menuOverlay.hidden = false;
     menuBtn.setAttribute("aria-expanded", "true");
 }
 
 function closeMenu() {
     sidebar.hidden = true;
+    menuOverlay.hidden = true;
     menuBtn.setAttribute("aria-expanded", "false");
 }
 
+menuOverlay.addEventListener("click", closeMenu);
 menuBtn.addEventListener("click", openMenu);
 closeMenuBtn.addEventListener("click", closeMenu);
 

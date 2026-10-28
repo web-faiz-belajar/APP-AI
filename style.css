@@ -1002,3 +1002,72 @@ body[data-theme="dark"] {
 .sidebar {
     z-index: 20;
 }
+
+/* ==============================
+   PROFIL PENGGUNA PREMIUM
+============================== */
+
+.profile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    margin-top: 24px !important;
+    padding: 14px 10px !important;
+
+    border: 1px solid var(--border) !important;
+    border-radius: 17px !important;
+
+    background: var(--surface-soft) !important;
+    color: var(--text) !important;
+
+    text-align: left;
+}
+
+.profile-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+
+    border-radius: 15px;
+
+    background: linear-gradient(
+        135deg,
+        #6558f5,
+        #b06bfa
+    );
+
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.profile-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.profile-info strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.profile-info small {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.profile-arrow {
+    color: var(--muted);
+    font-size: 25px;
+}

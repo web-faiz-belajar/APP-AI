@@ -638,11 +638,70 @@ function addMessage(role, text) {
   renderBubbleMessages();
 }
 
+
 /* ========================================
-   7. MENGIRIM PESAN UTAMA
+   7. MENGIRIM PESAN UTAMA KE AI
 ======================================== */
 
-chatForm.addEventListener("submit", (event) => {
+async function sendMessageToAI(text) {
+  const chat = getActiveChat();
+
+  if (!chat) {
+    await appAlert("Obrolan tidak ditemukan.");
+    return;
+  }
+
+  // Ambil riwayat sebelum pesan terbaru.
+  const history = chat.messages
+    .slice(0, -1)
+    .filter((message) =>
+      ["user", "assistant"].includes(message.role)
+    )
+    .slice(-10)
+    .map((message) => ({
+      role: message.role,
+      content: message.text || ""
+    }));
+
+  try {
+    const response = await fetch(
+      "https://project-6yqhq.vercel.app/api/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text,
+          history
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Permintaan AI gagal."
+      );
+    }
+
+    if (typeof data.reply !== "string") {
+      throw new Error("Balasan AI tidak valid.");
+    }
+
+    addMessage("assistant", data.reply);
+  } catch (error) {
+    console.error("Kesalahan menghubungi AI:", error);
+
+    await appAlert(
+      "AI belum bisa membalas. Periksa koneksi internet, konfigurasi backend, dan Runtime Logs Vercel. Detail kesalahan tersedia di console browser.",
+      "Gagal menghubungi AI"
+    );
+  }
+}
+
+chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const text = messageInput.value.trim();
@@ -654,6 +713,8 @@ chatForm.addEventListener("submit", (event) => {
   messageInput.value = "";
   resizeTextarea(messageInput);
   messageInput.focus();
+
+  await sendMessageToAI(text);
 });
 
 messageInput.addEventListener("keydown", (event) => {

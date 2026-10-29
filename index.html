@@ -187,7 +187,11 @@
           <small>Asisten pribadi</small>
         </div>
       </div>
-
+      
+      <button id="closeBubbleWindowBtn"
+        type="button" aria-label="Tutup jendela chat">✕</button>
+    </header>
+    
     <div id="bubbleMessages" class="bubble-messages"
       aria-live="polite">
     </div>
@@ -205,14 +209,15 @@
 <!-- HALAMAN PROFIL PENGGUNA APP AI -->
 <section id="profilePage" class="profile-page" hidden>
 
-<button
-  id="backProfileBtn"
-  class="profile-back"
-  type="button"
-  aria-label="Tutup profil"
->
-  Tutup <span aria-hidden="true">✕</span>
-</button>
+  <header class="profile-topbar">
+    <button
+      id="backProfileBtn"
+      class="profile-back"
+      type="button"
+      aria-label="Tutup profil"
+    >
+      Tutup <span aria-hidden="true">✕</span>
+    </button>
 
     <h2>Profil Saya</h2>
     <span class="profile-badge">APP AI</span>

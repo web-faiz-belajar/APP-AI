@@ -1000,6 +1000,45 @@ loadConversations();
   const schoolRadio = document.getElementById("statusSchool");
   const workRadio = document.getElementById("statusWork");
   const levelSelect = document.getElementById("profileSchoolLevel");
+   
+const openSchoolLevelModal = document.getElementById(
+  "openSchoolLevelModal"
+);
+const schoolLevelLabel = document.getElementById(
+  "schoolLevelLabel"
+);
+
+function syncSchoolLevelLabel() {
+  schoolLevelLabel.textContent = levelSelect.value || "Pilih jenjang";
+}
+
+openSchoolLevelModal.addEventListener("click", async () => {
+  const selectedLevel = await showAppModal({
+    title: "Jenjang sekolah",
+    message: "Pilih jenjang pendidikan kamu.",
+    type: "select",
+    value: levelSelect.value,
+    options: [
+      { value: "SD", label: "SD" },
+      { value: "SMP", label: "SMP" },
+      { value: "SMA", label: "SMA" },
+      { value: "SMK", label: "SMK" }
+    ],
+    confirmText: "Pilih",
+    cancelText: "Batal"
+  });
+
+  if (selectedLevel === null) return;
+
+  levelSelect.value = selectedLevel;
+  syncSchoolLevelLabel();
+  updateConditionalFields();
+
+  levelSelect.dispatchEvent(new Event("change", {
+    bubbles: true
+  }));
+});
+
   const majorInput = document.getElementById("profileMajor");
   const jobInput = document.getElementById("profileJob");
 

@@ -529,7 +529,7 @@ function renderHistory(list = conversations) {
   });
 }
 
-function deleteConversation(chatId) {
+async function deleteConversation(chatId) {
   const chat = conversations.find(
     (item) => item.id === chatId
   );

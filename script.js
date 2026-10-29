@@ -931,10 +931,10 @@ fileInput.addEventListener("change", () => {
 ======================================== */
 
 voiceBtn.addEventListener("click", () => {
-  alert(
-    "Fitur suara belum diaktifkan. " +
-    "Tombol ini akan dikembangkan pada tahap berikutnya."
-  );
+appAlert(
+  "Obrolan tidak bisa disimpan. Periksa ruang penyimpanan browser HP.",
+  "Penyimpanan gagal"
+);
 });
 
 /* ========================================

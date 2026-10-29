@@ -158,6 +158,11 @@ document.addEventListener("keydown", (event) => {
 
 function goHome() {
   closeMenu();
+
+  welcomeScreen.hidden = false;
+  chatMessages.hidden = true;
+
+  messageInput.value = "";
   messageInput.focus();
 }
 

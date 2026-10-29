@@ -202,5 +202,196 @@
   </section>
 
   <script src="script.js"></script>
+  
+<!-- HALAMAN PROFIL PENGGUNA APP AI -->
+<section id="profilePage" class="profile-page" hidden>
+
+  <!-- Header profil -->
+  <header class="profile-topbar">
+    <button
+      id="backProfileBtn"
+      class="profile-back"
+      type="button"
+      aria-label="Kembali"
+    >←</button>
+
+    <h2>Profil Saya</h2>
+    <span class="profile-badge">APP AI</span>
+  </header>
+
+  <!-- Identitas pengguna -->
+  <div class="profile-card">
+
+    <div id="profileAvatar" class="profile-avatar">U</div>
+
+    <h3 id="profileDisplayName">Pengguna APP AI</h3>
+    <p class="profile-subtitle">Identitas pengguna</p>
+
+    <div class="profile-divider"></div>
+
+    <form id="profileForm">
+
+      <!-- Nama -->
+      <div class="profile-field">
+        <label for="profileNameInput">Nama lengkap</label>
+        <input
+          id="profileNameInput"
+          name="profileName"
+          type="text"
+          maxlength="40"
+          placeholder="Masukkan nama lengkap"
+          autocomplete="name"
+          required
+        />
+      </div>
+
+      <!-- Tanggal lahir -->
+      <div class="profile-field">
+        <label for="profileBirthDate">Tanggal lahir</label>
+        <input
+          id="profileBirthDate"
+          name="birthDate"
+          type="date"
+          autocomplete="bday"
+          required
+        />
+      </div>
+
+      <!-- Status: sekolah atau bekerja -->
+      <fieldset class="profile-field profile-status-field">
+        <legend>Status saat ini</legend>
+
+        <div class="profile-status-options">
+
+          <label class="profile-status-option" for="statusSchool">
+            <input
+              id="statusSchool"
+              type="radio"
+              name="profileStatus"
+              value="sekolah"
+              checked
+            />
+            <span>🎓 Sekolah</span>
+          </label>
+
+          <label class="profile-status-option" for="statusWork">
+            <input
+              id="statusWork"
+              type="radio"
+              name="profileStatus"
+              value="bekerja"
+            />
+            <span>💼 Bekerja</span>
+          </label>
+
+        </div>
+      </fieldset>
+
+      <!-- Kolom khusus sekolah -->
+      <div id="schoolFields" class="profile-conditional-fields">
+
+        <div class="profile-field">
+          <label for="profileSchoolLevel">Jenjang sekolah</label>
+
+          <select
+            id="profileSchoolLevel"
+            name="schoolLevel"
+          >
+            <option value="SD">SD</option>
+            <option value="SMP">SMP</option>
+            <option value="SMA">SMA</option>
+            <option value="SMK">SMK</option>
+          </select>
+        </div>
+
+        <!-- Hanya ditampilkan jika SMK -->
+        <div
+          id="majorField"
+          class="profile-field"
+          hidden
+        >
+          <label for="profileMajor">Jurusan SMK</label>
+
+          <input
+            id="profileMajor"
+            name="schoolMajor"
+            type="text"
+            maxlength="80"
+            placeholder="Contoh: TJKT"
+          />
+        </div>
+
+      </div>
+
+      <!-- Kolom khusus bekerja -->
+      <div
+        id="workFields"
+        class="profile-conditional-fields"
+        hidden
+      >
+        <div class="profile-field">
+          <label for="profileJob">Nama pekerjaan</label>
+
+          <input
+            id="profileJob"
+            name="jobName"
+            type="text"
+            maxlength="80"
+            placeholder="Masukkan nama pekerjaan"
+          />
+        </div>
+      </div>
+
+      <!-- Simpan profil -->
+      <button
+        id="saveProfileBtn"
+        class="profile-save-btn"
+        type="submit"
+      >
+        Simpan Perubahan
+      </button>
+
+      <p
+        id="profileStatus"
+        class="profile-status-message"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+    </form>
+  </div>
+
+  <!-- Statistik penggunaan -->
+  <section class="profile-statistics">
+
+    <h3>Statistik Penggunaan</h3>
+    <p class="profile-statistics-subtitle">
+      Ringkasan aktivitas APP AI
+    </p>
+
+    <div class="profile-stats-grid">
+
+      <article class="profile-stat-card">
+        <span class="profile-stat-icon">💬</span>
+        <strong id="profileChatCount">0</strong>
+        <p>Percakapan</p>
+      </article>
+
+      <article class="profile-stat-card">
+        <span class="profile-stat-icon">✉️</span>
+        <strong id="profileMessageCount">0</strong>
+        <p>Total pesan</p>
+      </article>
+
+    </div>
+  </section>
+
+  <p class="profile-note">
+    Informasi profil disimpan di browser perangkat ini.
+  </p>
+
+</section>
+<!-- AKHIR HALAMAN PROFIL -->
+
 </body>
 </html>

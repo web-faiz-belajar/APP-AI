@@ -1153,28 +1153,46 @@ body[data-theme="light"] .bubble-message.ai {
 .profile-topbar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
   margin-bottom: 26px;
 }
 
 .profile-topbar h2 {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
+  text-align: center;
   font-size: 21px;
   font-weight: 750;
 }
 
+.profile-topbar .profile-badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .profile-back {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
   border: 1px solid rgba(140, 170, 255, 0.22);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(100, 130, 200, 0.12);
   color: inherit;
-  font-size: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  transition: 0.2s ease;
+  box-sizing: border-box;
+  transition: background 0.2s ease;
 }
 
 .profile-back:hover {
@@ -1468,29 +1486,4 @@ body[data-theme="light"] .bubble-message.ai {
   .profile-stat-card {
     padding: 16px 12px;
   }
-}
-
-/* Tombol tutup halaman profil */
-.profile-back {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 15px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 12px;
-  background: rgba(148, 163, 184, 0.10);
-  color: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.profile-back:hover {
-  background: rgba(148, 163, 184, 0.20);
-}
-
-.profile-back:active {
-  transform: scale(0.97);
 }

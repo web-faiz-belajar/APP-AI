@@ -7,6 +7,220 @@
 
 const $ = (id) => document.getElementById(id);
 
+/* ========================================
+   APP AI — POPUP CUSTOM
+======================================== */
+
+let appModalElement = null;
+let appModalResolver = null;
+
+function closeAppModal(result = null) {
+  if (!appModalElement) return;
+
+  const overlay = appModalElement;
+  const resolver = appModalResolver;
+
+  appModalElement = null;
+  appModalResolver = null;
+
+  overlay.remove();
+
+  if (resolver) resolver(result);
+}
+
+function showAppModal({
+  title = "APP AI",
+  message = "",
+  type = "alert",
+  value = "",
+  placeholder = "",
+  options = [],
+  confirmText = "Mengerti",
+  cancelText = "Batal",
+  required = false
+} = {}) {
+  if (appModalElement) {
+    closeAppModal(null);
+  }
+
+  return new Promise((resolve) => {
+    appModalResolver = resolve;
+
+    const overlay = document.createElement("div");
+    overlay.className = "app-modal-overlay";
+
+    const card = document.createElement("section");
+    card.className = "app-modal-card";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+    card.setAttribute("aria-labelledby", "appModalTitle");
+
+    const heading = document.createElement("h2");
+    heading.className = "app-modal-title";
+    heading.id = "appModalTitle";
+    heading.textContent = title;
+
+    const description = document.createElement("p");
+    description.className = "app-modal-message";
+    description.textContent = message;
+
+    card.append(heading);
+
+    if (message) card.append(description);
+
+    let field = null;
+
+    if (type === "prompt") {
+      field = document.createElement("input");
+      field.className = "app-modal-input";
+      field.type = "text";
+      field.value = value;
+      field.placeholder = placeholder;
+      field.maxLength = 80;
+      field.autocomplete = "off";
+      field.setAttribute("aria-label", title);
+      field.required = required;
+      card.append(field);
+    }
+
+    if (type === "select") {
+      field = document.createElement("select");
+      field.className = "app-modal-select";
+      field.setAttribute("aria-label", title);
+
+      options.forEach((option) => {
+        const item = document.createElement("option");
+        item.value = option.value;
+        item.textContent = option.label;
+        field.append(item);
+      });
+
+      if (value !== "") field.value = value;
+      card.append(field);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "app-modal-actions";
+
+    if (type !== "alert") {
+      const cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.className =
+        "app-modal-button app-modal-cancel";
+      cancel.textContent = cancelText;
+      cancel.addEventListener("click", () => {
+        closeAppModal(null);
+      });
+      actions.append(cancel);
+    }
+
+    const confirm = document.createElement("button");
+    confirm.type = "button";
+    confirm.className =
+      "app-modal-button app-modal-primary";
+    confirm.textContent = confirmText;
+
+    confirm.addEventListener("click", () => {
+      if (type === "confirm") {
+        closeAppModal(true);
+        return;
+      }
+
+      if (type === "prompt") {
+        const result = field.value.trim();
+
+        if (required && !result) {
+          field.focus();
+          field.setCustomValidity("Bagian ini wajib diisi.");
+          field.reportValidity();
+          field.addEventListener(
+            "input",
+            () => field.setCustomValidity(""),
+            { once: true }
+          );
+          return;
+        }
+
+        closeAppModal(result);
+        return;
+      }
+
+      if (type === "select") {
+        closeAppModal(field.value);
+        return;
+      }
+
+      closeAppModal(true);
+    });
+
+    actions.append(confirm);
+    card.append(actions);
+    overlay.append(card);
+    document.body.append(overlay);
+
+    appModalElement = overlay;
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        closeAppModal(null);
+      }
+    });
+
+    const handleEscape = (event) => {
+      if (
+        event.key === "Escape" &&
+        appModalElement === overlay
+      ) {
+        event.preventDefault();
+        closeAppModal(null);
+      }
+    };
+
+    overlay.addEventListener("keydown", handleEscape);
+
+    if (field) {
+      field.focus();
+
+      if (type === "prompt") field.select();
+    } else {
+      confirm.focus();
+    }
+  });
+}
+
+function appAlert(message, title = "Informasi APP AI") {
+  return showAppModal({
+    title,
+    message,
+    type: "alert",
+    confirmText: "Mengerti"
+  });
+}
+
+function appConfirm(message, title = "Konfirmasi") {
+  return showAppModal({
+    title,
+    message,
+    type: "confirm",
+    confirmText: "Ya, lanjutkan",
+    cancelText: "Batal"
+  }).then((result) => result === true);
+}
+
+function appPrompt(message, value = "", title = "Edit") {
+  return showAppModal({
+    title,
+    message,
+    value,
+    type: "prompt",
+    placeholder: "Masukkan teks...",
+    confirmText: "Simpan",
+    cancelText: "Batal",
+    required: true
+  });
+}
+
+
 const menuBtn = $("menuBtn");
 const closeMenuBtn = $("closeMenuBtn");
 const menuOverlay = $("menuOverlay");

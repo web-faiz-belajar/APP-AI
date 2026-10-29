@@ -702,12 +702,26 @@ if (!response.ok) {
   } catch (error) {
     console.error("Kesalahan menghubungi AI:", error);
 
-    await appAlert(
-      "AI belum bisa membalas. Periksa koneksi internet, konfigurasi backend, dan Runtime Logs Vercel. Detail kesalahan tersedia di console browser.",
-      "Gagal menghubungi AI"
-    );
-  }
+    
+const pesanError = error?.message || "";
+
+if (
+  pesanError.includes("credit_balance_exhausted") ||
+  pesanError.includes("insufficient_quota") ||
+  pesanError.includes("no credits remaining") ||
+  pesanError.includes("Status: 429")
+) {
+  await appAlert(
+    "Kredit OpenAI API habis. AI belum bisa membalas. Periksa saldo API atau gunakan layanan AI lain.",
+    "Kredit AI Habis"
+  );
+} else {
+  await appAlert(
+    `AI belum bisa membalas.\n\nDetail: ${pesanError || "Terjadi kesalahan yang tidak diketahui."}`,
+    "Gagal Menghubungi AI"
+  );
 }
+
 
 chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();

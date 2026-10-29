@@ -903,8 +903,10 @@ loadConversations();
   }
 
   function openProfile() {
-    profilePage.hidden = false;
+  alert("Fungsi profil berhasil dijalankan!");
 
+  profilePage.hidden = false;
+     
     // Tampilkan profil sebagai layar penuh di atas aplikasi.
     Object.assign(profilePage.style, {
       position: "fixed",

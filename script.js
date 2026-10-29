@@ -1119,6 +1119,7 @@ openSchoolLevelModal.addEventListener("click", async () => {
     jobInput.value = profile.job || "";
 
     updateConditionalFields();
+    syncSchoolLevelLabel();
     updateIdentity(nameInput.value);
     renderStatistics();
   }

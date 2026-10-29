@@ -541,7 +541,6 @@ async function deleteConversation(chatId) {
   "Hapus obrolan"
 );
 
-if (!confirmed) return;
   if (!confirmed) return;
 
   conversations = conversations.filter(

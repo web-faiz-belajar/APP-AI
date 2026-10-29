@@ -1,5 +1,4 @@
 
-alert("JavaScript APP AI berhasil dimuat!");
 "use strict";
 
 /* ========================================

@@ -292,21 +292,29 @@
       </fieldset>
 
       <!-- Kolom khusus sekolah -->
-      <div id="schoolFields" class="profile-conditional-fields">
+<div class="profile-field">
+  <label for="profileSchoolLevel">Jenjang sekolah</label>
 
-        <div class="profile-field">
-          <label for="profileSchoolLevel">Jenjang sekolah</label>
+  <button
+    type="button"
+    id="openSchoolLevelModal"
+    class="app-modal-input school-level-trigger"
+  >
+    <span id="schoolLevelLabel">SMK</span>
+    <span aria-hidden="true">⌄</span>
+  </button>
 
-          <select
-            id="profileSchoolLevel"
-            name="schoolLevel"
-          >
-            <option value="SD">SD</option>
-            <option value="SMP">SMP</option>
-            <option value="SMA">SMA</option>
-            <option value="SMK">SMK</option>
-          </select>
-        </div>
+  <select
+    id="profileSchoolLevel"
+    name="schoolLevel"
+    hidden
+  >
+    <option value="SD">SD</option>
+    <option value="SMP">SMP</option>
+    <option value="SMA">SMA</option>
+    <option value="SMK" selected>SMK</option>
+  </select>
+</div>
 
         <!-- Hanya ditampilkan jika SMK -->
         <div

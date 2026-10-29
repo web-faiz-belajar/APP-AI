@@ -536,10 +536,12 @@ function deleteConversation(chatId) {
 
   if (!chat) return;
 
-  const confirmed = confirm(
-    `Hapus obrolan "${chat.title}"?`
-  );
+  const confirmed = await appConfirm(
+  `Hapus obrolan "${chat.title}"?`,
+  "Hapus obrolan"
+);
 
+if (!confirmed) return;
   if (!confirmed) return;
 
   conversations = conversations.filter(

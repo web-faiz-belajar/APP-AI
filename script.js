@@ -657,14 +657,15 @@ messageInput.addEventListener("keydown", (event) => {
    8. EDIT NAMA OBROLAN
 ======================================== */
 
-renameChatBtn.addEventListener("click", () => {
+renameChatBtn.addEventListener("click", async () => {
   const chat = getActiveChat();
 
   if (!chat) return;
 
-  const newTitle = prompt(
-    "Masukkan nama obrolan:",
-    chat.title
+  const newTitle = await appPrompt(
+    "Masukkan nama baru untuk obrolan ini.",
+    chat.title,
+    "Edit nama obrolan"
   );
 
   if (newTitle === null) return;
@@ -672,7 +673,10 @@ renameChatBtn.addEventListener("click", () => {
   const cleanedTitle = newTitle.trim();
 
   if (!cleanedTitle) {
-    alert("Nama obrolan tidak boleh kosong.");
+    await appAlert(
+      "Nama obrolan tidak boleh kosong.",
+      "Nama belum diisi"
+    );
     return;
   }
 

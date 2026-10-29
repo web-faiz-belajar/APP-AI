@@ -745,3 +745,229 @@ function resizeTextarea(textarea) {
 
 loadTheme();
 loadConversations();
+
+/* =====================================
+   APP AI — PROFIL PENGGUNA
+===================================== */
+
+(() => {
+  const profilePage = document.getElementById("profilePage");
+  const profileBtn = document.getElementById("profileBtn");
+  const backBtn = document.getElementById("backProfileBtn");
+  const form = document.getElementById("profileForm");
+
+  if (!profilePage || !form) {
+    console.error("HTML profil APP AI belum ditemukan.");
+    return;
+  }
+
+  const nameInput = document.getElementById("profileNameInput");
+  const birthInput = document.getElementById("profileBirthDate");
+  const schoolRadio = document.getElementById("statusSchool");
+  const workRadio = document.getElementById("statusWork");
+  const levelSelect = document.getElementById("profileSchoolLevel");
+  const majorInput = document.getElementById("profileMajor");
+  const jobInput = document.getElementById("profileJob");
+
+  const schoolFields = document.getElementById("schoolFields");
+  const majorField = document.getElementById("majorField");
+  const workFields = document.getElementById("workFields");
+
+  const displayName = document.getElementById("profileDisplayName");
+  const avatar = document.getElementById("profileAvatar");
+  const statusMessage = document.getElementById("profileStatus");
+
+  const chatCount = document.getElementById("profileChatCount");
+  const messageCount = document.getElementById("profileMessageCount");
+
+  const PROFILE_KEY = "faizAIProfile";
+
+  function getProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function updateConditionalFields() {
+    const isSchool = schoolRadio.checked;
+    const isWork = workRadio.checked;
+    const isSMK = isSchool && levelSelect.value === "SMK";
+
+    schoolFields.hidden = !isSchool;
+    workFields.hidden = !isWork;
+    majorField.hidden = !isSMK;
+
+    levelSelect.required = isSchool;
+    majorInput.required = isSMK;
+    jobInput.required = isWork;
+  }
+
+  function updateIdentity(name) {
+    const cleanName = name.trim();
+    const shownName = cleanName || "Pengguna APP AI";
+
+    displayName.textContent = shownName;
+    avatar.textContent = cleanName
+      ? cleanName.charAt(0).toUpperCase()
+      : "U";
+  }
+
+  function renderStatistics() {
+    // Menggunakan data percakapan APP AI yang sudah ada.
+    const chats = Array.isArray(conversations)
+      ? conversations
+      : [];
+
+    const totalMessages = chats.reduce((total, chat) => {
+      return total + (
+        Array.isArray(chat.messages)
+          ? chat.messages.length
+          : 0
+      );
+    }, 0);
+
+    chatCount.textContent = chats.length;
+    messageCount.textContent = totalMessages;
+  }
+
+  function loadProfile() {
+    const profile = getProfile();
+
+    nameInput.value = profile.name || "";
+    birthInput.value = profile.birthDate || "";
+
+    schoolRadio.checked = profile.status !== "bekerja";
+    workRadio.checked = profile.status === "bekerja";
+
+    levelSelect.value = profile.schoolLevel || "SMK";
+    majorInput.value = profile.major || "";
+    jobInput.value = profile.job || "";
+
+    updateConditionalFields();
+    updateIdentity(nameInput.value);
+    renderStatistics();
+  }
+
+  function saveProfile(event) {
+    event.preventDefault();
+
+    const name = nameInput.value.trim();
+
+    if (!name) {
+      statusMessage.textContent = "Nama lengkap wajib diisi.";
+      nameInput.focus();
+      return;
+    }
+
+    const profile = {
+      name,
+      birthDate: birthInput.value,
+      status: schoolRadio.checked ? "sekolah" : "bekerja",
+      schoolLevel: schoolRadio.checked ? levelSelect.value : "",
+      major: schoolRadio.checked && levelSelect.value === "SMK"
+        ? majorInput.value.trim()
+        : "",
+      job: workRadio.checked ? jobInput.value.trim() : ""
+    };
+
+    if (profile.status === "sekolah" && !profile.schoolLevel) {
+      statusMessage.textContent = "Pilih jenjang sekolah.";
+      return;
+    }
+
+    if (profile.status === "sekolah" &&
+        profile.schoolLevel === "SMK" &&
+        !profile.major) {
+      statusMessage.textContent = "Masukkan jurusan SMK.";
+      majorInput.focus();
+      return;
+    }
+
+    if (profile.status === "bekerja" && !profile.job) {
+      statusMessage.textContent = "Masukkan nama pekerjaan.";
+      jobInput.focus();
+      return;
+    }
+
+    try {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+      updateIdentity(profile.name);
+      statusMessage.textContent = "Profil berhasil disimpan!";
+    } catch (error) {
+      console.error(error);
+      statusMessage.textContent =
+        "Profil gagal disimpan. Periksa penyimpanan browser.";
+    }
+  }
+
+  function openProfile() {
+    profilePage.hidden = false;
+
+    // Tampilkan profil sebagai layar penuh di atas aplikasi.
+    Object.assign(profilePage.style, {
+      position: "fixed",
+      inset: "0",
+      zIndex: "1000",
+      width: "100%",
+      maxWidth: "none",
+      height: "100%",
+      overflowY: "auto",
+      boxSizing: "border-box",
+      background: "#0b1020"
+    });
+
+    loadProfile();
+
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("menuOverlay");
+
+    if (sidebar && !sidebar.hidden) closeMenu();
+    if (overlay) overlay.hidden = true;
+  }
+
+  function closeProfile() {
+    profilePage.hidden = true;
+
+    // Kembalikan gaya awal untuk penggunaan berikutnya.
+    profilePage.style.position = "";
+    profilePage.style.inset = "";
+    profilePage.style.zIndex = "";
+    profilePage.style.width = "";
+    profilePage.style.maxWidth = "";
+    profilePage.style.height = "";
+    profilePage.style.overflowY = "";
+    profilePage.style.boxSizing = "";
+    profilePage.style.background = "";
+  }
+
+  schoolRadio.addEventListener("change", updateConditionalFields);
+  workRadio.addEventListener("change", updateConditionalFields);
+  levelSelect.addEventListener("change", updateConditionalFields);
+
+  nameInput.addEventListener("input", () => {
+    updateIdentity(nameInput.value);
+  });
+
+  form.addEventListener("submit", saveProfile);
+
+  if (profileBtn) {
+    profileBtn.addEventListener("click", openProfile);
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener("click", closeProfile);
+  }
+
+  // Perbarui statistik ketika ada perubahan percakapan.
+  const originalRenderHistory = renderHistory;
+
+  renderHistory = function (...args) {
+    const result = originalRenderHistory.apply(this, args);
+    renderStatistics();
+    return result;
+  };
+
+  loadProfile();
+})();

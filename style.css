@@ -1469,3 +1469,28 @@ body[data-theme="light"] .bubble-message.ai {
     padding: 16px 12px;
   }
 }
+
+/* Tombol tutup halaman profil */
+.profile-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.10);
+  color: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.profile-back:hover {
+  background: rgba(148, 163, 184, 0.20);
+}
+
+.profile-back:active {
+  transform: scale(0.97);
+}

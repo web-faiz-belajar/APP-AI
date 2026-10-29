@@ -815,3 +815,318 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================
+   APP AI — PREMIUM VISUAL UPGRADE
+   Tambahkan di paling bawah style.css
+========================================= */
+
+:root {
+  --accent: #7185ff;
+  --accent-2: #a16eff;
+  --border: rgba(164, 180, 255, 0.13);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+
+/* Latar belakang premium */
+body[data-theme="dark"] {
+  background:
+    radial-gradient(
+      ellipse at 50% -15%,
+      rgba(91, 91, 255, 0.16),
+      transparent 55%
+    ),
+    #090d18;
+}
+
+/* Header */
+.app-header {
+  min-height: 68px;
+  padding: 10px 18px;
+  border-bottom-color: rgba(160, 175, 255, 0.12);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.logo {
+  background: linear-gradient(100deg, #ffffff, #9caeff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.menu-btn,
+.bubble-btn {
+  border-color: var(--border);
+  border-radius: 15px;
+  background: linear-gradient(
+    145deg,
+    rgba(119, 137, 255, 0.13),
+    rgba(161, 110, 255, 0.06)
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.menu-btn:active,
+.bubble-btn:active {
+  transform: scale(0.92);
+  border-color: var(--accent);
+}
+
+/* Halaman sambutan */
+.welcome-screen {
+  position: relative;
+  gap: 2px;
+  padding: 30px 22px;
+}
+
+.ai-avatar {
+  width: 78px;
+  height: 78px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 27px;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.32),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #617bff, #8b52e8);
+  box-shadow:
+    0 0 0 8px rgba(105, 121, 255, 0.06),
+    0 0 45px rgba(107, 103, 255, 0.3);
+  font-size: 25px;
+  animation: ai-glow 4s ease-in-out infinite;
+}
+
+@keyframes ai-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 8px rgba(105, 121, 255, 0.05),
+      0 0 35px rgba(107, 103, 255, 0.22);
+  }
+  50% {
+    box-shadow:
+      0 0 0 12px rgba(105, 121, 255, 0.07),
+      0 0 48px rgba(107, 103, 255, 0.34);
+  }
+}
+
+.welcome-screen h1 {
+  font-size: clamp(25px, 6vw, 34px);
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  line-height: 1.2;
+}
+
+.welcome-screen p {
+  margin-top: 8px;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+/* Area pesan */
+.chat-messages {
+  gap: 17px;
+  padding: 22px 17px;
+  scroll-behavior: smooth;
+}
+
+.chat-message {
+  padding: 13px 16px;
+  border-radius: 20px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+  line-height: 1.65;
+  animation: message-in 0.2s ease-out;
+}
+
+.chat-message.user {
+  background: linear-gradient(135deg, #526ef0, #7459e9);
+  border-bottom-right-radius: 6px;
+}
+
+body[data-theme="dark"] .chat-message.ai {
+  border-color: rgba(163, 177, 255, 0.11);
+  background: linear-gradient(
+    145deg,
+    rgba(31, 42, 68, 0.96),
+    rgba(21, 29, 49, 0.96)
+  );
+}
+
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Kolom input */
+.chat-footer {
+  padding: 13px 14px calc(14px + env(safe-area-inset-bottom));
+  border-top-color: var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(22px);
+}
+
+.message-input-area {
+  gap: 9px;
+  padding: 8px 9px;
+  border-color: rgba(150, 166, 255, 0.18);
+  border-radius: 25px;
+  background: var(--surface-2);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.message-input-area:focus-within {
+  border-color: rgba(113, 133, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(113, 133, 255, 0.08);
+}
+
+#messageInput {
+  font-size: 15px;
+}
+
+#sendBtn,
+#bubbleSendBtn {
+  background: linear-gradient(135deg, #6982ff, #955ce9);
+  box-shadow: 0 4px 15px rgba(104, 113, 255, 0.25);
+  transition: transform 0.2s, filter 0.2s;
+}
+
+#sendBtn:active,
+#bubbleSendBtn:active {
+  transform: scale(0.91);
+  filter: brightness(1.15);
+}
+
+/* Menu samping */
+.sidebar {
+  border-color: rgba(150, 166, 255, 0.14);
+  background: var(--surface);
+  backdrop-filter: blur(25px);
+}
+
+.sidebar-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar > button,
+.settings-section > button {
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.15s;
+}
+
+.sidebar > button:active,
+.settings-section > button:active {
+  transform: scale(0.985);
+}
+
+#historyList .history-item {
+  border-radius: 13px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#historyList .history-item[aria-current="true"] {
+  border-color: rgba(113, 133, 255, 0.24);
+  background: rgba(113, 133, 255, 0.12);
+}
+
+/* Tombol gelembung */
+.floating-bubble {
+  border: 2px solid rgba(255, 255, 255, 0.32);
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.3),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #647dff, #a15bea);
+  box-shadow:
+    0 8px 28px rgba(91, 105, 255, 0.35),
+    0 0 0 6px rgba(113, 133, 255, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  transition: box-shadow 0.2s;
+}
+
+.floating-bubble:active {
+  box-shadow: 0 4px 15px rgba(91, 105, 255, 0.4);
+}
+
+/* Jendela chat mengambang */
+.bubble-window {
+  border-color: rgba(150, 166, 255, 0.2);
+  border-radius: 25px;
+  background: var(--surface);
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(150, 166, 255, 0.035);
+}
+
+.bubble-window-header {
+  background: var(--surface-2);
+}
+
+.bubble-message {
+  padding: 11px 13px;
+  border-radius: 16px;
+  line-height: 1.55;
+}
+
+.bubble-message.user {
+  background: linear-gradient(135deg, #526ef0, #7459e9);
+  border-bottom-right-radius: 5px;
+}
+
+body[data-theme="dark"] .bubble-message.ai {
+  background: linear-gradient(
+    145deg,
+    rgba(31, 42, 68, 0.96),
+    rgba(21, 29, 49, 0.96)
+  );
+}
+
+/* Perbaikan tema terang */
+body[data-theme="light"] .app-header,
+body[data-theme="light"] .chat-footer {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+body[data-theme="light"] .logo {
+  background: linear-gradient(100deg, #3349bb, #7955dc);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body[data-theme="light"] .ai-avatar {
+  border-color: rgba(82, 103, 237, 0.2);
+}
+
+body[data-theme="light"] .chat-message.ai,
+body[data-theme="light"] .bubble-message.ai {
+  border-color: rgba(25, 35, 65, 0.1);
+  background: #ffffff;
+}
+
+/* Aksesibilitas: kurangi animasi bila diminta */
+@media (prefers-reduced-motion: reduce) {
+  .ai-avatar {
+    animation: none;
+  }
+}

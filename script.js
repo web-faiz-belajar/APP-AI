@@ -435,15 +435,30 @@ function loadTheme() {
   applyTheme(savedTheme);
 }
 
-themeSelect.addEventListener("change", () => {
+themeSelect.addEventListener("change", async () => {
   const theme = themeSelect.value;
   applyTheme(theme);
 
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch (error) {
-    console.warn("Pengaturan tema tidak bisa disimpan.");
+    await appAlert(
+      "Pengaturan tema tidak bisa disimpan.",
+      "Penyimpanan gagal"
+    );
+    return;
   }
+
+  const themeNames = {
+    light: "Terang",
+    dark: "Gelap",
+    system: "Ikuti perangkat"
+  };
+
+  await appAlert(
+    `Tema APP AI sekarang: ${themeNames[theme] || theme}.`,
+    "Tema berhasil diubah"
+  );
 });
 
 if (systemTheme.addEventListener) {

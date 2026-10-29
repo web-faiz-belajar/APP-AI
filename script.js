@@ -680,11 +680,22 @@ async function sendMessageToAI(text) {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Permintaan AI gagal."
-      );
-    }
+if (!response.ok) {
+  console.error("OpenAI API Error:", {
+    status: response.status,
+    type: data.error?.type,
+    code: data.error?.code,
+    message: data.error?.message
+  });
+
+  return res.status(502).json({
+    error: "Permintaan AI gagal.",
+    detail:
+      data.error?.message ||
+      "OpenAI tidak memberikan detail kesalahan.",
+    status: response.status
+  });
+}
 
     if (typeof data.reply !== "string") {
       throw new Error("Balasan AI tidak valid.");

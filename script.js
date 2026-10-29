@@ -869,7 +869,7 @@ function renderBubbleMessages() {
   bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
 }
 
-bubbleForm.addEventListener("submit", (event) => {
+bubbleForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const text = bubbleInput.value.trim();
@@ -881,6 +881,8 @@ bubbleForm.addEventListener("submit", (event) => {
   bubbleInput.value = "";
   resizeTextarea(bubbleInput);
   bubbleInput.focus();
+
+  await sendMessageToAI(text);
 });
 
 bubbleInput.addEventListener("keydown", (event) => {

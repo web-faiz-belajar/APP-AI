@@ -681,20 +681,17 @@ async function sendMessageToAI(text) {
     const data = await response.json();
 
 if (!response.ok) {
-  console.error("OpenAI API Error:", {
+  console.error("Detail error dari backend:", {
     status: response.status,
-    type: data.error?.type,
-    code: data.error?.code,
-    message: data.error?.message
+    error: data.error,
+    detail: data.detail
   });
 
-  return res.status(502).json({
-    error: "Permintaan AI gagal.",
-    detail:
-      data.error?.message ||
-      "OpenAI tidak memberikan detail kesalahan.",
-    status: response.status
-  });
+  throw new Error(
+    `${data.error || "Permintaan AI gagal"} | ` +
+    `Status: ${data.status || response.status} | ` +
+    `Detail: ${data.detail || "Tidak ada detail"}`
+  );
 }
 
     if (typeof data.reply !== "string") {

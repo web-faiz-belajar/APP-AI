@@ -903,7 +903,6 @@ loadConversations();
   }
 
   function openProfile() {
-  alert("Fungsi profil berhasil dijalankan!");
 
   profilePage.hidden = false;
      

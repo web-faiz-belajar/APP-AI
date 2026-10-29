@@ -952,12 +952,9 @@ loadConversations();
 
   form.addEventListener("submit", saveProfile);
 
-   if (profileBtn) {
-     profileBtn.onclick = function () {
-       console.log("Tombol Profil Saya ditekan");
-       openProfile();
-   };
-   }
+if (profileBtn) {
+  profileBtn.addEventListener("click", openProfile);
+}
 
   if (backBtn) {
     backBtn.addEventListener("click", closeProfile);

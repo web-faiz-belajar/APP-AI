@@ -1,36 +1,32 @@
 
-/* ========================================
-   APP AI — DESAIN UTAMA
-======================================== */
-
 :root {
   color-scheme: dark;
-  --bg: #0b1020;
+  --bg: #090e1c;
   --surface: #131a2b;
   --surface-2: #1b2438;
-  --border: rgba(255, 255, 255, 0.09);
+  --border: rgba(255,255,255,.1);
   --text: #f4f6ff;
   --muted: #98a4bd;
-  --accent: #6478ff;
-  --accent-2: #8b5cf6;
+  --accent: #7185ff;
+  --accent-2: #a16eff;
   --user-bubble: #5368ed;
   --ai-bubble: #192238;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  --shadow: 0 20px 60px rgba(0,0,0,.35);
 }
 
 body[data-theme="light"] {
   color-scheme: light;
   --bg: #f3f5fb;
-  --surface: #ffffff;
+  --surface: #fff;
   --surface-2: #edf0f8;
-  --border: rgba(25, 35, 65, 0.12);
+  --border: rgba(25,35,65,.12);
   --text: #182036;
   --muted: #68738b;
   --accent: #5267ed;
   --accent-2: #7955dc;
   --user-bubble: #5267ed;
-  --ai-bubble: #ffffff;
-  --shadow: 0 18px 45px rgba(36, 47, 80, 0.14);
+  --ai-bubble: #fff;
+  --shadow: 0 18px 45px rgba(36,47,80,.14);
 }
 
 * {
@@ -41,10 +37,9 @@ body[data-theme="light"] {
   display: none !important;
 }
 
-html,
-body {
+html, body {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   margin: 0;
 }
 
@@ -53,15 +48,10 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  transition: background 0.2s, color 0.2s;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-button,
-input,
-textarea,
-select {
+button, input, textarea, select {
   font: inherit;
 }
 
@@ -71,22 +61,20 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
 button:focus-visible,
-textarea:focus-visible,
 input:focus-visible,
+textarea:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* ========================================
-   KERANGKA APLIKASI
-======================================== */
+/* KERANGKA */
 
 .app-container {
   display: flex;
@@ -97,9 +85,7 @@ button:disabled {
   overflow: hidden;
 }
 
-/* ========================================
-   HEADER
-======================================== */
+/* HEADER */
 
 .app-header {
   position: relative;
@@ -107,8 +93,8 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 64px;
-  padding: 10px 16px;
+  min-height: 68px;
+  padding: 10px 18px;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
 }
@@ -116,11 +102,13 @@ button:disabled {
 .logo {
   padding: 7px 0;
   border: 0;
-  background: transparent;
-  color: var(--text);
-  font-size: 21px;
-  font-weight: 850;
-  letter-spacing: -0.7px;
+  background: linear-gradient(100deg,#fff,#9caeff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -1px;
 }
 
 .header-actions {
@@ -129,22 +117,19 @@ button:disabled {
   gap: 10px;
 }
 
-.menu-btn,
-.bubble-btn {
+.menu-btn, .bubble-btn {
   display: grid;
   place-items: center;
   width: 42px;
   height: 42px;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 15px;
   background: var(--surface-2);
   font-size: 21px;
-  transition: transform 0.2s, background 0.2s;
 }
 
-.menu-btn:active,
-.bubble-btn:active {
-  transform: scale(0.94);
+.menu-btn:active, .bubble-btn:active {
+  transform: scale(.93);
 }
 
 .bubble-icon {
@@ -168,9 +153,7 @@ button:disabled {
   transform: skew(-25deg);
 }
 
-/* ========================================
-   KONTEN CHAT UTAMA
-======================================== */
+/* KONTEN */
 
 #mainContent {
   position: relative;
@@ -194,23 +177,23 @@ button:disabled {
 .ai-avatar {
   display: grid;
   place-items: center;
-  width: 66px;
-  height: 66px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 23px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 10px 35px rgba(100, 120, 255, 0.28);
-  color: white;
-  font-size: 22px;
+  width: 78px;
+  height: 78px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 27px;
+  background: linear-gradient(135deg,#617bff,#8b52e8);
+  box-shadow: 0 0 40px rgba(107,103,255,.3);
+  color: #fff;
+  font-size: 25px;
   font-weight: 850;
 }
 
 .welcome-screen h1 {
   max-width: 420px;
   margin: 0 0 9px;
-  font-size: clamp(23px, 5vw, 30px);
-  letter-spacing: -0.8px;
+  font-size: clamp(23px,5vw,32px);
+  letter-spacing: -.8px;
 }
 
 .welcome-screen p {
@@ -223,30 +206,32 @@ button:disabled {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 13px;
+  gap: 15px;
   min-height: 0;
   padding: 20px 16px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
 .chat-message {
-  max-width: min(88%, 620px);
-  padding: 12px 15px;
+  max-width: min(88%,620px);
+  padding: 13px 16px;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 20px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  line-height: 1.55;
+  line-height: 1.6;
+  animation: message-in .2s ease-out;
 }
 
 .chat-message.user {
   align-self: flex-end;
   border-color: transparent;
   border-bottom-right-radius: 5px;
-  background: var(--user-bubble);
-  color: #fff;
+  background: linear-gradient(135deg,#526ef0,#7459e9);
+  color: white;
 }
 
 .chat-message.ai {
@@ -255,9 +240,12 @@ button:disabled {
   background: var(--ai-bubble);
 }
 
-/* ========================================
-   AREA INPUT PESAN
-======================================== */
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* INPUT CHAT */
 
 .chat-footer {
   position: relative;
@@ -281,7 +269,12 @@ button:disabled {
   border: 1px solid var(--border);
   border-radius: 23px;
   background: var(--surface-2);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.message-input-area:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(113,133,255,.1);
 }
 
 #messageInput {
@@ -307,8 +300,7 @@ button:disabled {
   color: var(--muted);
 }
 
-.tool-btn,
-#sendBtn {
+.tool-btn, #sendBtn {
   display: grid;
   flex: 0 0 40px;
   place-items: center;
@@ -326,10 +318,10 @@ button:disabled {
   font-size: 25px;
 }
 
-#sendBtn {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+#sendBtn, #bubbleSendBtn {
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
   color: #fff;
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 700;
 }
 
@@ -341,15 +333,13 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 
-/* ========================================
-   MENU SAMPING
-======================================== */
+/* SIDEBAR */
 
 .menu-overlay {
   position: fixed;
   z-index: 20;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0,0,0,.55);
   backdrop-filter: blur(3px);
 }
 
@@ -357,30 +347,23 @@ button:disabled {
   position: fixed;
   z-index: 21;
   top: 0;
-  bottom: 0;
   right: 0;
-  left: auto;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   gap: 7px;
-  width: min(320px, 88vw);
+  width: min(320px,88vw);
   padding: 18px 14px;
   overflow-y: auto;
-  border-right: 1px solid var(--border);
+  border-left: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow);
-  animation: sidebar-in 0.2s ease-out;
+  animation: sidebar-in .2s ease-out;
 }
 
 @keyframes sidebar-in {
-  from {
-    opacity: 0;
-    transform: translateX(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(15px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .sidebar-header {
@@ -388,6 +371,8 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
 }
 
 .sidebar-header h2 {
@@ -431,8 +416,7 @@ button:disabled {
   font-size: 20px;
 }
 
-.history-section,
-.settings-section {
+.history-section, .settings-section {
   display: flex;
   flex-direction: column;
   gap: 9px;
@@ -445,7 +429,7 @@ button:disabled {
   color: var(--muted);
   font-size: 12px;
   font-weight: 750;
-  letter-spacing: 0.8px;
+  letter-spacing: .8px;
   text-transform: uppercase;
 }
 
@@ -471,7 +455,7 @@ button:disabled {
   padding: 11px 12px;
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 13px;
   background: transparent;
   text-align: left;
   text-overflow: ellipsis;
@@ -479,8 +463,8 @@ button:disabled {
 }
 
 #historyList .history-item[aria-current="true"] {
-  border-color: var(--border);
-  background: var(--surface-2);
+  border-color: rgba(113,133,255,.24);
+  background: rgba(113,133,255,.12);
 }
 
 #searchPanel {
@@ -489,8 +473,7 @@ button:disabled {
   gap: 8px;
 }
 
-#historySearchInput,
-#themeSelect {
+#historySearchInput, #themeSelect {
   width: 100%;
   min-height: 42px;
   padding: 10px 12px;
@@ -516,24 +499,10 @@ button:disabled {
   font-size: 13px;
 }
 
-.settings-section > button {
-  min-height: 48px;
-}
-
 .profile-menu-btn {
   margin-top: 8px;
   border-color: var(--border) !important;
   background: var(--surface-2) !important;
-}
-
-.profile-avatar {
-  display: grid;
-  flex: 0 0 38px;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 
 .profile-info {
@@ -543,23 +512,11 @@ button:disabled {
   gap: 3px;
 }
 
-.profile-info strong {
-  font-size: 13px;
-}
+.profile-info strong { font-size: 13px; }
+.profile-info small { color: var(--muted); font-size: 11px; }
+.profile-arrow { color: var(--muted); font-size: 23px; }
 
-.profile-info small {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.profile-arrow {
-  color: var(--muted);
-  font-size: 23px;
-}
-
-/* ========================================
-   TOMBOL GELEMBUNG MENGAMBANG
-======================================== */
+/* GELEMBUNG */
 
 .floating-bubble {
   position: fixed;
@@ -570,16 +527,13 @@ button:disabled {
   place-items: center;
   width: 60px;
   height: 60px;
-  border: 2px solid rgba(255, 255, 255, 0.24);
+  border: 2px solid rgba(255,255,255,.3);
   border-radius: 50%;
-  background: linear-gradient(135deg, #6278ff, #9257ef);
-  box-shadow:
-    0 8px 28px rgba(90, 104, 255, 0.45),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg,#647dff,#a15bea);
+  box-shadow: 0 8px 28px rgba(91,105,255,.4);
   color: white;
   font-size: 18px;
   font-weight: 850;
-  animation: bubble-appear 0.25s ease-out;
   touch-action: none;
 }
 
@@ -595,20 +549,7 @@ button:disabled {
   content: "";
 }
 
-@keyframes bubble-appear {
-  from {
-    opacity: 0;
-    transform: scale(0.65);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ========================================
-   JENDELA CHAT GELEMBUNG
-======================================== */
+/* JENDELA GELEMBUNG */
 
 .bubble-window {
   position: fixed;
@@ -617,26 +558,14 @@ button:disabled {
   bottom: calc(100px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  width: min(370px, calc(100vw - 24px));
-  height: min(490px, calc(100dvh - 130px));
+  width: min(370px,calc(100vw - 24px));
+  height: min(490px,calc(100dvh - 130px));
   min-height: 260px;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 23px;
   background: var(--surface);
   box-shadow: var(--shadow);
-  animation: bubble-window-in 0.22s ease-out;
-}
-
-@keyframes bubble-window-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .bubble-window-header {
@@ -644,7 +573,6 @@ button:disabled {
   flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
   min-height: 65px;
   padding: 11px 13px;
   border-bottom: 1px solid var(--border);
@@ -663,14 +591,8 @@ button:disabled {
   gap: 3px;
 }
 
-.bubble-window-title strong {
-  font-size: 14px;
-}
-
-.bubble-window-title small {
-  color: var(--muted);
-  font-size: 11px;
-}
+.bubble-window-title strong { font-size: 14px; }
+.bubble-window-title small { color: var(--muted); font-size: 11px; }
 
 .bubble-window-avatar {
   display: grid;
@@ -678,7 +600,7 @@ button:disabled {
   width: 39px;
   height: 39px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
   color: white;
   font-size: 13px;
   font-weight: 800;
@@ -698,7 +620,6 @@ button:disabled {
   display: flex;
   flex: 1;
   flex-direction: column;
-  align-items: stretch;
   gap: 10px;
   min-height: 0;
   padding: 13px;
@@ -708,26 +629,24 @@ button:disabled {
 
 .bubble-message {
   max-width: 88%;
-  padding: 10px 12px;
+  padding: 11px 13px;
   border: 1px solid var(--border);
-  border-radius: 15px;
+  border-radius: 16px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .bubble-message.user {
   align-self: flex-end;
   border-color: transparent;
-  border-bottom-right-radius: 4px;
   background: var(--user-bubble);
-  color: #fff;
+  color: white;
 }
 
 .bubble-message.ai {
   align-self: flex-start;
-  border-bottom-left-radius: 4px;
   background: var(--ai-bubble);
 }
 
@@ -738,7 +657,6 @@ button:disabled {
   gap: 7px;
   padding: 10px;
   border-top: 1px solid var(--border);
-  background: var(--surface);
 }
 
 #bubbleInput {
@@ -750,16 +668,9 @@ button:disabled {
   resize: none;
   border: 1px solid var(--border);
   border-radius: 14px;
-  outline: none;
   background: var(--surface-2);
   color: var(--text);
   font-size: 13px;
-  line-height: 1.4;
-}
-
-#bubbleInput:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
 }
 
 #bubbleSendBtn {
@@ -770,384 +681,26 @@ button:disabled {
   height: 40px;
   border: 0;
   border-radius: 13px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: white;
-  font-size: 22px;
 }
 
-/* ========================================
-   LAYAR KECIL
-======================================== */
-
-@media (max-width: 380px) {
-  .app-header {
-    min-height: 58px;
-    padding: 8px 11px;
-  }
-
-  .logo {
-    font-size: 19px;
-  }
-
-  .menu-btn,
-  .bubble-btn {
-    width: 38px;
-    height: 38px;
-  }
-
-  .chat-footer {
-    padding-right: 9px;
-    padding-left: 9px;
-  }
-
-  .bubble-window {
-    right: 8px;
-    width: calc(100vw - 16px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* =========================================
-   APP AI — PREMIUM VISUAL UPGRADE
-   Tambahkan di paling bawah style.css
-========================================= */
-
-:root {
-  --accent: #7185ff;
-  --accent-2: #a16eff;
-  --border: rgba(164, 180, 255, 0.13);
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
-}
-
-/* Latar belakang premium */
-body[data-theme="dark"] {
-  background:
-    radial-gradient(
-      ellipse at 50% -15%,
-      rgba(91, 91, 255, 0.16),
-      transparent 55%
-    ),
-    #090d18;
-}
-
-/* Header */
-.app-header {
-  min-height: 68px;
-  padding: 10px 18px;
-  border-bottom-color: rgba(160, 175, 255, 0.12);
-  background: color-mix(in srgb, var(--surface) 90%, transparent);
-  backdrop-filter: blur(20px);
-}
-
-.logo {
-  background: linear-gradient(100deg, #ffffff, #9caeff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -1px;
-  font-size: 23px;
-  font-weight: 900;
-}
-
-.menu-btn,
-.bubble-btn {
-  border-color: var(--border);
-  border-radius: 15px;
-  background: linear-gradient(
-    145deg,
-    rgba(119, 137, 255, 0.13),
-    rgba(161, 110, 255, 0.06)
-  );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: transform 0.2s, border-color 0.2s;
-}
-
-.menu-btn:active,
-.bubble-btn:active {
-  transform: scale(0.92);
-  border-color: var(--accent);
-}
-
-/* Halaman sambutan */
-.welcome-screen {
-  position: relative;
-  gap: 2px;
-  padding: 30px 22px;
-}
-
-.ai-avatar {
-  width: 78px;
-  height: 78px;
-  margin-bottom: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 27px;
-  background:
-    radial-gradient(
-      circle at 30% 20%,
-      rgba(255, 255, 255, 0.32),
-      transparent 40%
-    ),
-    linear-gradient(135deg, #617bff, #8b52e8);
-  box-shadow:
-    0 0 0 8px rgba(105, 121, 255, 0.06),
-    0 0 45px rgba(107, 103, 255, 0.3);
-  font-size: 25px;
-  animation: ai-glow 4s ease-in-out infinite;
-}
-
-@keyframes ai-glow {
-  0%, 100% {
-    box-shadow:
-      0 0 0 8px rgba(105, 121, 255, 0.05),
-      0 0 35px rgba(107, 103, 255, 0.22);
-  }
-  50% {
-    box-shadow:
-      0 0 0 12px rgba(105, 121, 255, 0.07),
-      0 0 48px rgba(107, 103, 255, 0.34);
-  }
-}
-
-.welcome-screen h1 {
-  font-size: clamp(25px, 6vw, 34px);
-  font-weight: 800;
-  letter-spacing: -1.1px;
-  line-height: 1.2;
-}
-
-.welcome-screen p {
-  margin-top: 8px;
-  font-size: 14px;
-  letter-spacing: 0.2px;
-}
-
-/* Area pesan */
-.chat-messages {
-  gap: 17px;
-  padding: 22px 17px;
-  scroll-behavior: smooth;
-}
-
-.chat-message {
-  padding: 13px 16px;
-  border-radius: 20px;
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
-  line-height: 1.65;
-  animation: message-in 0.2s ease-out;
-}
-
-.chat-message.user {
-  background: linear-gradient(135deg, #526ef0, #7459e9);
-  border-bottom-right-radius: 6px;
-}
-
-body[data-theme="dark"] .chat-message.ai {
-  border-color: rgba(163, 177, 255, 0.11);
-  background: linear-gradient(
-    145deg,
-    rgba(31, 42, 68, 0.96),
-    rgba(21, 29, 49, 0.96)
-  );
-}
-
-@keyframes message-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Kolom input */
-.chat-footer {
-  padding: 13px 14px calc(14px + env(safe-area-inset-bottom));
-  border-top-color: var(--border);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(22px);
-}
-
-.message-input-area {
-  gap: 9px;
-  padding: 8px 9px;
-  border-color: rgba(150, 166, 255, 0.18);
-  border-radius: 25px;
-  background: var(--surface-2);
-  box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.025);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.message-input-area:focus-within {
-  border-color: rgba(113, 133, 255, 0.7);
-  box-shadow: 0 0 0 3px rgba(113, 133, 255, 0.08);
-}
-
-#messageInput {
-  font-size: 15px;
-}
-
-#sendBtn,
-#bubbleSendBtn {
-  background: linear-gradient(135deg, #6982ff, #955ce9);
-  box-shadow: 0 4px 15px rgba(104, 113, 255, 0.25);
-  transition: transform 0.2s, filter 0.2s;
-}
-
-#sendBtn:active,
-#bubbleSendBtn:active {
-  transform: scale(0.91);
-  filter: brightness(1.15);
-}
-
-/* Menu samping */
-.sidebar {
-  border-color: rgba(150, 166, 255, 0.14);
-  background: var(--surface);
-  backdrop-filter: blur(25px);
-}
-
-.sidebar-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebar > button,
-.settings-section > button {
-  transition:
-    background 0.2s,
-    border-color 0.2s,
-    transform 0.15s;
-}
-
-.sidebar > button:active,
-.settings-section > button:active {
-  transform: scale(0.985);
-}
-
-#historyList .history-item {
-  border-radius: 13px;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-#historyList .history-item[aria-current="true"] {
-  border-color: rgba(113, 133, 255, 0.24);
-  background: rgba(113, 133, 255, 0.12);
-}
-
-/* Tombol gelembung */
-.floating-bubble {
-  border: 2px solid rgba(255, 255, 255, 0.32);
-  background:
-    radial-gradient(
-      circle at 30% 20%,
-      rgba(255, 255, 255, 0.3),
-      transparent 40%
-    ),
-    linear-gradient(135deg, #647dff, #a15bea);
-  box-shadow:
-    0 8px 28px rgba(91, 105, 255, 0.35),
-    0 0 0 6px rgba(113, 133, 255, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.25);
-  transition: box-shadow 0.2s;
-}
-
-.floating-bubble:active {
-  box-shadow: 0 4px 15px rgba(91, 105, 255, 0.4);
-}
-
-/* Jendela chat mengambang */
-.bubble-window {
-  border-color: rgba(150, 166, 255, 0.2);
-  border-radius: 25px;
-  background: var(--surface);
-  box-shadow:
-    0 25px 80px rgba(0, 0, 0, 0.42),
-    0 0 0 1px rgba(150, 166, 255, 0.035);
-}
-
-.bubble-window-header {
-  background: var(--surface-2);
-}
-
-.bubble-message {
-  padding: 11px 13px;
-  border-radius: 16px;
-  line-height: 1.55;
-}
-
-.bubble-message.user {
-  background: linear-gradient(135deg, #526ef0, #7459e9);
-  border-bottom-right-radius: 5px;
-}
-
-body[data-theme="dark"] .bubble-message.ai {
-  background: linear-gradient(
-    145deg,
-    rgba(31, 42, 68, 0.96),
-    rgba(21, 29, 49, 0.96)
-  );
-}
-
-/* Perbaikan tema terang */
-body[data-theme="light"] .app-header,
-body[data-theme="light"] .chat-footer {
-  background: rgba(255, 255, 255, 0.94);
-}
-
-body[data-theme="light"] .logo {
-  background: linear-gradient(100deg, #3349bb, #7955dc);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-body[data-theme="light"] .ai-avatar {
-  border-color: rgba(82, 103, 237, 0.2);
-}
-
-body[data-theme="light"] .chat-message.ai,
-body[data-theme="light"] .bubble-message.ai {
-  border-color: rgba(25, 35, 65, 0.1);
-  background: #ffffff;
-}
-
-/* Aksesibilitas: kurangi animasi bila diminta */
-@media (prefers-reduced-motion: reduce) {
-  .ai-avatar {
-    animation: none;
-  }
-}
-
-/* =================================
-   APP AI — PROFIL PENGGUNA
-================================= */
+/* PROFIL */
 
 .profile-page {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
   width: 100%;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 24px 18px 40px;
-  color: var(--text-color, #f1f5ff);
-  animation: profileAppear 0.3s ease;
+  height: 100dvh;
+  padding: 20px 18px 40px;
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--text);
+  animation: profile-in .25s ease;
 }
 
-.profile-page[hidden],
-.profile-conditional-fields[hidden],
-#majorField[hidden] {
-  display: none !important;
+@keyframes profile-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .profile-topbar {
@@ -1156,88 +709,64 @@ body[data-theme="light"] .bubble-message.ai {
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  margin-bottom: 26px;
+  max-width: 760px;
+  margin: 0 auto 26px;
 }
 
 .profile-topbar h2 {
-  flex: 1 1 auto;
-  min-width: 0;
+  flex: 1;
   margin: 0;
   text-align: center;
   font-size: 21px;
-  font-weight: 750;
-}
-
-.profile-topbar .profile-badge {
-  flex: 0 0 auto;
-  white-space: nowrap;
 }
 
 .profile-back {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  flex: 0 0 auto;
-  width: auto;
-  min-width: 0;
-  height: 40px;
+  min-height: 40px;
   padding: 0 12px;
-  border: 1px solid rgba(140, 170, 255, 0.22);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: rgba(100, 130, 200, 0.12);
-  color: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  background: var(--surface-2);
   white-space: nowrap;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: background 0.2s ease;
-}
-
-.profile-back:hover {
-  background: rgba(100, 150, 255, 0.25);
-  transform: translateX(-2px);
 }
 
 .profile-badge {
   padding: 7px 10px;
-  border: 1px solid rgba(100, 160, 255, 0.25);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(70, 120, 255, 0.12);
-  color: #8fb8ff;
+  background: var(--surface-2);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1px;
+}
+
+.profile-card, .profile-statistics, .profile-note {
+  width: 100%;
+  max-width: 760px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .profile-card {
   padding: 26px 22px;
-  border: 1px solid rgba(140, 170, 255, 0.2);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(78, 111, 255, 0.15),
-      transparent 42%
-    ),
-    rgba(18, 27, 48, 0.82);
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(18px);
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .profile-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: 82px;
   height: 82px;
   margin: 0 auto 15px;
-  border: 2px solid rgba(155, 190, 255, 0.7);
+  border: 2px solid rgba(155,190,255,.7);
   border-radius: 27px;
-  background: linear-gradient(135deg, #3978ff, #8548e8);
-  box-shadow: 0 0 35px rgba(75, 112, 255, 0.3);
-  color: #fff;
+  background: linear-gradient(135deg,#3978ff,#8548e8);
+  color: white;
   font-size: 32px;
   font-weight: 800;
 }
@@ -1245,13 +774,12 @@ body[data-theme="light"] .bubble-message.ai {
 .profile-card > h3 {
   margin: 0;
   text-align: center;
-  font-size: 21px;
   overflow-wrap: anywhere;
 }
 
 .profile-subtitle {
   margin: 7px 0 0;
-  color: #9caaca;
+  color: var(--muted);
   text-align: center;
   font-size: 13px;
 }
@@ -1259,7 +787,7 @@ body[data-theme="light"] .bubble-message.ai {
 .profile-divider {
   height: 1px;
   margin: 24px 0;
-  background: rgba(150, 170, 220, 0.15);
+  background: var(--border);
 }
 
 .profile-field {
@@ -1272,36 +800,22 @@ body[data-theme="light"] .bubble-message.ai {
 
 .profile-field label,
 .profile-status-field legend {
-  color: #c7d4f1;
+  color: var(--text);
   font-size: 13px;
   font-weight: 650;
 }
 
 .profile-field input,
-.profile-field select {
-  box-sizing: border-box;
+.profile-field select,
+.school-level-trigger {
   width: 100%;
   min-height: 49px;
   padding: 13px 14px;
-  border: 1px solid rgba(140, 165, 220, 0.2);
+  border: 1px solid var(--border);
   border-radius: 13px;
-  outline: none;
-  background: rgba(7, 13, 27, 0.62);
-  color: #f1f5ff;
-  font: inherit;
+  background: var(--surface-2);
+  color: var(--text);
   font-size: 14px;
-  color-scheme: dark;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.profile-field input::placeholder {
-  color: #7583a3;
-}
-
-.profile-field input:focus,
-.profile-field select:focus {
-  border-color: #6597ff;
-  box-shadow: 0 0 0 3px rgba(75, 120, 255, 0.13);
 }
 
 .profile-status-field {
@@ -1310,13 +824,11 @@ body[data-theme="light"] .bubble-message.ai {
   border: 0;
 }
 
-.profile-status-field legend {
-  margin-bottom: 12px;
-}
+.profile-status-field legend { margin-bottom: 12px; }
 
 .profile-status-options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 12px;
 }
 
@@ -1326,39 +838,42 @@ body[data-theme="light"] .bubble-message.ai {
   justify-content: center;
   min-height: 54px;
   padding: 10px;
-  border: 1px solid rgba(140, 165, 220, 0.2);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(7, 13, 27, 0.5);
-  color: #cbd7f0;
+  background: var(--surface-2);
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
 .profile-status-option:has(input:checked) {
-  border-color: #6797ff;
-  background: rgba(66, 112, 255, 0.16);
-  color: #ffffff;
-  box-shadow: inset 0 0 0 1px rgba(103, 151, 255, 0.15);
+  border-color: var(--accent);
+  background: rgba(66,112,255,.16);
 }
 
 .profile-status-option input {
   width: 16px;
   min-height: auto;
   margin: 0 8px 0 0;
-  accent-color: #719dff;
+  accent-color: var(--accent);
 }
 
 .profile-conditional-fields {
   margin-top: 20px;
   padding: 16px;
-  border: 1px solid rgba(130, 160, 230, 0.14);
+  border: 1px solid var(--border);
   border-radius: 17px;
-  background: rgba(5, 12, 27, 0.28);
-  animation: profileAppear 0.22s ease;
+  background: var(--surface-2);
 }
 
 .profile-conditional-fields .profile-field:last-child {
   margin-bottom: 0;
+}
+
+.school-level-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
 }
 
 .profile-save-btn {
@@ -1367,29 +882,15 @@ body[data-theme="light"] .bubble-message.ai {
   margin-top: 8px;
   border: 0;
   border-radius: 14px;
-  background: linear-gradient(110deg, #3878ff, #7454e9);
-  box-shadow: 0 8px 25px rgba(70, 105, 255, 0.2);
-  color: #fff;
-  font: inherit;
-  font-size: 14px;
+  background: linear-gradient(110deg,#3878ff,#7454e9);
+  color: white;
   font-weight: 750;
-  cursor: pointer;
-  transition: transform 0.2s, filter 0.2s;
-}
-
-.profile-save-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.profile-save-btn:active {
-  transform: scale(0.98);
 }
 
 .profile-status-message {
   min-height: 18px;
   margin: 12px 0 0;
-  color: #86e8b4;
+  color: #269d68;
   text-align: center;
   font-size: 13px;
 }
@@ -1398,29 +899,26 @@ body[data-theme="light"] .bubble-message.ai {
   margin-top: 28px;
 }
 
-.profile-statistics > h3 {
-  margin: 0;
-  font-size: 18px;
-}
+.profile-statistics > h3 { margin: 0; font-size: 18px; }
 
 .profile-statistics-subtitle {
   margin: 7px 0 16px;
-  color: #97a6c5;
+  color: var(--muted);
   font-size: 13px;
 }
 
 .profile-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 14px;
 }
 
 .profile-stat-card {
   min-width: 0;
   padding: 20px 16px;
-  border: 1px solid rgba(140, 170, 255, 0.17);
+  border: 1px solid var(--border);
   border-radius: 19px;
-  background: rgba(18, 27, 48, 0.78);
+  background: var(--surface);
 }
 
 .profile-stat-icon {
@@ -1431,153 +929,72 @@ body[data-theme="light"] .bubble-message.ai {
 
 .profile-stat-card strong {
   display: block;
-  color: #a8c5ff;
+  color: var(--accent);
   font-size: 29px;
-  font-weight: 800;
 }
 
 .profile-stat-card p {
   margin: 6px 0 0;
-  color: #a4b2ce;
+  color: var(--muted);
   font-size: 12px;
 }
 
 .profile-note {
-  margin: 20px 0 0;
-  color: #8c9bb9;
+  margin-top: 20px;
+  color: var(--muted);
   text-align: center;
   font-size: 12px;
   line-height: 1.7;
 }
 
-@keyframes profileAppear {
-  from {
-    opacity: 0;
-    transform: translateY(7px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 420px) {
-  .profile-page {
-    padding: 18px 12px 30px;
-  }
-
-  .profile-card {
-    padding: 22px 16px;
-  }
-
-  .profile-status-options {
-    gap: 8px;
-  }
-
-  .profile-status-option {
-    padding: 8px 5px;
-    font-size: 13px;
-  }
-
-  .profile-stats-grid {
-    gap: 10px;
-  }
-
-  .profile-stat-card {
-    padding: 16px 12px;
-  }
-}
-
-/* ========================================
-   APP AI — SISTEM POPUP SERAGAM
-======================================== */
+/* POPUP */
 
 .app-modal-overlay {
   position: fixed;
-  inset: 0;
   z-index: 99999;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(3, 7, 18, 0.68);
+  background: rgba(3,7,18,.68);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.app-modal-overlay[hidden] {
-  display: none !important;
 }
 
 .app-modal-card {
   width: 100%;
   max-width: 360px;
   padding: 24px;
-  border: 1px solid var(--modal-border, rgba(130, 150, 200, 0.25));
+  border: 1px solid var(--border);
   border-radius: 22px;
-  background: var(--modal-bg, #111a2e);
-  color: var(--modal-text, #f4f7ff);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-  box-sizing: border-box;
-  animation: appModalIn 0.2s ease-out;
-}
-
-body[data-theme="dark"] {
-  --modal-bg: #111a2e;
-  --modal-text: #f4f7ff;
-  --modal-muted: #9baaca;
-  --modal-border: rgba(130, 150, 200, 0.25);
-  --modal-input: #0b1020;
-  --modal-primary: #6688ff;
-  --modal-secondary: rgba(140, 160, 200, 0.12);
-}
-
-body[data-theme="light"] {
-  --modal-bg: #ffffff;
-  --modal-text: #18233b;
-  --modal-muted: #68758d;
-  --modal-border: rgba(80, 100, 145, 0.2);
-  --modal-input: #f3f5fb;
-  --modal-primary: #4263eb;
-  --modal-secondary: #edf0f7;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
 }
 
 .app-modal-title {
   margin: 0 0 9px;
   font-size: 20px;
-  font-weight: 750;
-  line-height: 1.4;
 }
 
 .app-modal-message {
   margin: 0 0 20px;
-  color: var(--modal-muted, #9baaca);
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
-.app-modal-input,
-.app-modal-select {
+.app-modal-input, .app-modal-select {
   display: block;
   width: 100%;
   min-height: 46px;
   margin: 0 0 20px;
   padding: 12px 14px;
-  border: 1px solid var(--modal-border);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  outline: none;
-  background: var(--modal-input);
-  color: var(--modal-text);
-  font: inherit;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.app-modal-input:focus,
-.app-modal-select:focus {
-  border-color: var(--modal-primary);
-  box-shadow: 0 0 0 3px rgba(102, 136, 255, 0.15);
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .app-modal-actions {
@@ -1590,120 +1007,43 @@ body[data-theme="light"] {
 .app-modal-button {
   min-height: 42px;
   padding: 10px 16px;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  font: inherit;
   font-size: 13px;
   font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.app-modal-button:active {
-  transform: scale(0.97);
-}
-
-.app-modal-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .app-modal-cancel {
-  background: var(--modal-secondary);
-  color: var(--modal-text);
-  border-color: var(--modal-border);
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .app-modal-primary {
-  background: var(--modal-primary);
-  color: #ffffff;
+  border-color: transparent;
+  background: var(--accent);
+  color: white;
 }
 
-@keyframes appModalIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* LAYAR KECIL */
+
+@media (max-width: 420px) {
+  .app-header { min-height: 58px; padding: 8px 11px; }
+  .logo { font-size: 19px; }
+  .menu-btn, .bubble-btn { width: 38px; height: 38px; }
+  .chat-footer { padding-right: 9px; padding-left: 9px; }
+  .profile-page { padding: 18px 12px 30px; }
+  .profile-card { padding: 22px 16px; }
+  .profile-status-options { gap: 8px; }
+  .profile-status-option { padding: 8px 5px; font-size: 13px; }
+  .profile-stats-grid { gap: 10px; }
+  .profile-stat-card { padding: 16px 12px; }
+  .bubble-window { right: 8px; width: calc(100vw - 16px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-modal-card {
-    animation: none;
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
   }
-}
-
-/* Tombol pilihan jenjang sekolah */
-.school-level-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  text-align: left;
-  cursor: pointer;
-  margin-bottom: 0;
-}
-
-.school-level-trigger:focus-visible {
-  outline: 2px solid var(--modal-primary, #6688ff);
-  outline-offset: 3px;
-}
-
-/* ========================================
-   PERBAIKAN PROFIL TEMA TERANG
-======================================== */
-
-body[data-theme="light"] .profile-page {
-  color: var(--text);
-}
-
-body[data-theme="light"] .profile-card {
-  border-color: var(--border);
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(78, 111, 255, 0.08),
-      transparent 42%
-    ),
-    var(--surface);
-  box-shadow: var(--shadow);
-}
-
-body[data-theme="light"] .profile-field label,
-body[data-theme="light"] .profile-status-field legend {
-  color: var(--text);
-}
-
-body[data-theme="light"] .profile-field input,
-body[data-theme="light"] .profile-field select {
-  border-color: var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  color-scheme: light;
-}
-
-body[data-theme="light"] .profile-status-option {
-  border-color: var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-}
-
-body[data-theme="light"] .profile-conditional-fields,
-body[data-theme="light"] .profile-stat-card {
-  border-color: var(--border);
-  background: var(--surface-2);
-}
-
-body[data-theme="light"] .profile-subtitle,
-body[data-theme="light"] .profile-statistics-subtitle,
-body[data-theme="light"] .profile-stat-card p,
-body[data-theme="light"] .profile-note {
-  color: var(--muted);
-}
-
-body[data-theme="light"] .profile-stat-card strong {
-  color: var(--accent);
 }

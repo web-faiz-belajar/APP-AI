@@ -2,13 +2,55 @@
 "use strict";
 
 /* ========================================
-   1. MENGAMBIL ELEMEN HTML
+   1. UTILITAS DAN ELEMEN HTML
 ======================================== */
 
 const $ = (id) => document.getElementById(id);
 
+const CHAT_STORAGE_KEY = "faizAIConversations";
+const THEME_STORAGE_KEY = "faizAITheme";
+const PROFILE_KEY = "faizAIProfile";
+
+const menuBtn = $("menuBtn");
+const closeMenuBtn = $("closeMenuBtn");
+const menuOverlay = $("menuOverlay");
+const sidebar = $("sidebar");
+
+const homeBtn = $("homeBtn");
+const homeMenuBtn = $("homeMenuBtn");
+const newChatBtn = $("newChatBtn");
+const searchBtn = $("searchBtn");
+const renameChatBtn = $("renameChatBtn");
+
+const themeSelect = $("themeSelect");
+
+const bubbleBtn = $("bubbleBtn");
+const bubbleMenuBtn = $("bubbleMenuBtn");
+const floatingBubble = $("floatingBubble");
+const bubbleWindow = $("bubbleWindow");
+const closeBubbleWindowBtn = $("closeBubbleWindowBtn");
+const bubbleMessages = $("bubbleMessages");
+const bubbleForm = $("bubbleForm");
+const bubbleInput = $("bubbleInput");
+const bubbleSendBtn = $("bubbleSendBtn");
+
+const chatForm = $("chatForm");
+const messageInput = $("messageInput");
+const chatMessages = $("chatMessages");
+const welcomeScreen = $("welcomeScreen");
+const sendBtn = $("sendBtn");
+
+const historyList = $("historyList");
+const searchPanel = $("searchPanel");
+const historySearchInput = $("historySearchInput");
+const closeSearchBtn = $("closeSearchBtn");
+
+const fileInput = $("fileInput");
+const fileStatus = $("fileStatus");
+const voiceBtn = $("voiceBtn");
+
 /* ========================================
-   APP AI — POPUP CUSTOM
+   2. POPUP CUSTOM
 ======================================== */
 
 let appModalElement = null;
@@ -39,9 +81,7 @@ function showAppModal({
   cancelText = "Batal",
   required = false
 } = {}) {
-  if (appModalElement) {
-    closeAppModal(null);
-  }
+  if (appModalElement) closeAppModal(null);
 
   return new Promise((resolve) => {
     appModalResolver = resolve;
@@ -53,20 +93,19 @@ function showAppModal({
     card.className = "app-modal-card";
     card.setAttribute("role", "dialog");
     card.setAttribute("aria-modal", "true");
-    card.setAttribute("aria-labelledby", "appModalTitle");
 
     const heading = document.createElement("h2");
     heading.className = "app-modal-title";
-    heading.id = "appModalTitle";
     heading.textContent = title;
 
-    const description = document.createElement("p");
-    description.className = "app-modal-message";
-    description.textContent = message;
+    card.appendChild(heading);
 
-    card.append(heading);
-
-    if (message) card.append(description);
+    if (message) {
+      const description = document.createElement("p");
+      description.className = "app-modal-message";
+      description.textContent = message;
+      card.appendChild(description);
+    }
 
     let field = null;
 
@@ -78,25 +117,24 @@ function showAppModal({
       field.placeholder = placeholder;
       field.maxLength = 80;
       field.autocomplete = "off";
-      field.setAttribute("aria-label", title);
       field.required = required;
-      card.append(field);
+      card.appendChild(field);
     }
 
     if (type === "select") {
       field = document.createElement("select");
       field.className = "app-modal-select";
-      field.setAttribute("aria-label", title);
 
       options.forEach((option) => {
         const item = document.createElement("option");
         item.value = option.value;
         item.textContent = option.label;
-        field.append(item);
+        field.appendChild(item);
       });
 
       if (value !== "") field.value = value;
-      card.append(field);
+
+      card.appendChild(field);
     }
 
     const actions = document.createElement("div");
@@ -105,83 +143,61 @@ function showAppModal({
     if (type !== "alert") {
       const cancel = document.createElement("button");
       cancel.type = "button";
-      cancel.className =
-        "app-modal-button app-modal-cancel";
+      cancel.className = "app-modal-button app-modal-cancel";
       cancel.textContent = cancelText;
-      cancel.addEventListener("click", () => {
-        closeAppModal(null);
-      });
-      actions.append(cancel);
+      cancel.addEventListener("click", () => closeAppModal(null));
+      actions.appendChild(cancel);
     }
 
     const confirm = document.createElement("button");
     confirm.type = "button";
-    confirm.className =
-      "app-modal-button app-modal-primary";
+    confirm.className = "app-modal-button app-modal-primary";
     confirm.textContent = confirmText;
 
     confirm.addEventListener("click", () => {
       if (type === "confirm") {
         closeAppModal(true);
-        return;
-      }
-
-      if (type === "prompt") {
+      } else if (type === "prompt") {
         const result = field.value.trim();
 
         if (required && !result) {
-          field.focus();
           field.setCustomValidity("Bagian ini wajib diisi.");
           field.reportValidity();
-          field.addEventListener(
-            "input",
-            () => field.setCustomValidity(""),
-            { once: true }
-          );
           return;
         }
 
         closeAppModal(result);
-        return;
-      }
-
-      if (type === "select") {
+      } else if (type === "select") {
         closeAppModal(field.value);
-        return;
+      } else {
+        closeAppModal(true);
       }
-
-      closeAppModal(true);
     });
 
-    actions.append(confirm);
-    card.append(actions);
-    overlay.append(card);
-    document.body.append(overlay);
+    actions.appendChild(confirm);
+    card.appendChild(actions);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
 
     appModalElement = overlay;
 
     overlay.addEventListener("click", (event) => {
-      if (event.target === overlay) {
-        closeAppModal(null);
-      }
+      if (event.target === overlay) closeAppModal(null);
     });
 
-    const handleEscape = (event) => {
-      if (
-        event.key === "Escape" &&
-        appModalElement === overlay
-      ) {
-        event.preventDefault();
-        closeAppModal(null);
-      }
-    };
-
-    overlay.addEventListener("keydown", handleEscape);
+    overlay.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeAppModal(null);
+    });
 
     if (field) {
       field.focus();
 
-      if (type === "prompt") field.select();
+      if (type === "prompt") {
+        field.select();
+        field.addEventListener("input", () => {
+          field.setCustomValidity("");
+        });
+      }
     } else {
       confirm.focus();
     }
@@ -192,8 +208,7 @@ function appAlert(message, title = "Informasi APP AI") {
   return showAppModal({
     title,
     message,
-    type: "alert",
-    confirmText: "Mengerti"
+    type: "alert"
   });
 }
 
@@ -220,49 +235,9 @@ function appPrompt(message, value = "", title = "Edit") {
   });
 }
 
-
-const menuBtn = $("menuBtn");
-const closeMenuBtn = $("closeMenuBtn");
-const menuOverlay = $("menuOverlay");
-const sidebar = $("sidebar");
-
-const homeBtn = $("homeBtn");
-const homeMenuBtn = $("homeMenuBtn");
-const newChatBtn = $("newChatBtn");
-const searchBtn = $("searchBtn");
-const renameChatBtn = $("renameChatBtn");
-
-const themeSelect = $("themeSelect");
-
-const bubbleBtn = $("bubbleBtn");
-const bubbleMenuBtn = $("bubbleMenuBtn");
-const floatingBubble = $("floatingBubble");
-const bubbleWindow = $("bubbleWindow");
-const closeBubbleWindowBtn = $("closeBubbleWindowBtn");
-const bubbleMessages = $("bubbleMessages");
-const bubbleForm = $("bubbleForm");
-const bubbleInput = $("bubbleInput");
-
-const chatForm = $("chatForm");
-const messageInput = $("messageInput");
-const chatMessages = $("chatMessages");
-const welcomeScreen = $("welcomeScreen");
-
-const historyList = $("historyList");
-const searchPanel = $("searchPanel");
-const historySearchInput = $("historySearchInput");
-const closeSearchBtn = $("closeSearchBtn");
-
-const fileInput = $("fileInput");
-const fileStatus = $("fileStatus");
-const voiceBtn = $("voiceBtn");
-
 /* ========================================
-   2. DATA DAN PENYIMPANAN
+   3. DATA DAN PENYIMPANAN
 ======================================== */
-
-const CHAT_STORAGE_KEY = "faizAIConversations";
-const THEME_STORAGE_KEY = "faizAITheme";
 
 let conversations = [];
 let activeChatId = null;
@@ -276,6 +251,23 @@ function getActiveChat() {
   return conversations.find(
     (chat) => chat.id === activeChatId
   );
+}
+
+function saveConversations() {
+  try {
+    localStorage.setItem(
+      CHAT_STORAGE_KEY,
+      JSON.stringify(conversations)
+    );
+    return true;
+  } catch (error) {
+    console.error("Gagal menyimpan chat:", error);
+    appAlert(
+      "Penyimpanan gagal. Periksa ruang penyimpanan browser.",
+      "Penyimpanan gagal"
+    );
+    return false;
+  }
 }
 
 function createChat() {
@@ -293,22 +285,9 @@ function createChat() {
   renderHistory();
   renderMessages();
   renderBubbleMessages();
+  updateProfileStatistics();
 
   return chat;
-}
-
-function saveConversations() {
-  try {
-    localStorage.setItem(
-      CHAT_STORAGE_KEY,
-      JSON.stringify(conversations)
-    );
-  } catch (error) {
-    console.error("Gagal menyimpan obrolan:", error);
-    alert(
-      "Obrolan tidak bisa disimpan. Periksa ruang penyimpanan browser HP."
-    );
-  }
 }
 
 function loadConversations() {
@@ -341,56 +320,71 @@ function loadConversations() {
   renderHistory();
   renderMessages();
   renderBubbleMessages();
+  updateProfileStatistics();
 }
 
 /* ========================================
-   3. MENU SAMPING
+   4. MENU SAMPING
 ======================================== */
 
 function openMenu() {
+  if (!sidebar || !menuOverlay) return;
+
   sidebar.hidden = false;
   menuOverlay.hidden = false;
-  menuBtn.setAttribute("aria-expanded", "true");
+
+  menuBtn?.setAttribute("aria-expanded", "true");
 }
 
 function closeMenu() {
-  sidebar.hidden = true;
-  menuOverlay.hidden = true;
-  menuBtn.setAttribute("aria-expanded", "false");
+  if (sidebar) sidebar.hidden = true;
+  if (menuOverlay) menuOverlay.hidden = true;
+
+  menuBtn?.setAttribute("aria-expanded", "false");
 }
 
-menuBtn.addEventListener("click", openMenu);
-closeMenuBtn.addEventListener("click", closeMenu);
-menuOverlay.addEventListener("click", closeMenu);
+menuBtn?.addEventListener("click", openMenu);
+closeMenuBtn?.addEventListener("click", closeMenu);
+menuOverlay?.addEventListener("click", closeMenu);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeMenu();
     closeBubbleWindow();
+    closeProfile();
   }
 });
 
 function goHome() {
   closeMenu();
 
-  welcomeScreen.hidden = false;
-  chatMessages.hidden = true;
+  const profilePage = $("profilePage");
+  if (profilePage && !profilePage.hidden) closeProfile();
 
-  messageInput.value = "";
-  messageInput.focus();
+  if (welcomeScreen) welcomeScreen.hidden = false;
+  if (chatMessages) chatMessages.hidden = true;
+
+  if (messageInput) {
+    messageInput.value = "";
+    messageInput.focus();
+  }
 }
 
-homeBtn.addEventListener("click", goHome);
-homeMenuBtn.addEventListener("click", goHome);
+homeBtn?.addEventListener("click", goHome);
+homeMenuBtn?.addEventListener("click", goHome);
 
-newChatBtn.addEventListener("click", () => {
+newChatBtn?.addEventListener("click", () => {
   createChat();
   closeMenu();
-  messageInput.focus();
+
+  if (welcomeScreen) welcomeScreen.hidden = false;
+  if (chatMessages) chatMessages.hidden = true;
+
+  messageInput?.focus();
 });
 
 /* ========================================
-   4. TEMA TERANG DAN GELAP
+   5. TEMA TERANG DAN GELAP
 ======================================== */
 
 const systemTheme = window.matchMedia(
@@ -398,10 +392,9 @@ const systemTheme = window.matchMedia(
 );
 
 function applyTheme(theme) {
-  const actualTheme =
-    theme === "system"
-      ? (systemTheme.matches ? "dark" : "light")
-      : theme;
+  const actualTheme = theme === "system"
+    ? (systemTheme.matches ? "dark" : "light")
+    : theme;
 
   document.body.dataset.theme = actualTheme;
 
@@ -424,56 +417,56 @@ function loadTheme() {
     savedTheme =
       localStorage.getItem(THEME_STORAGE_KEY) || "system";
   } catch (error) {
-    console.warn("Pengaturan tema tidak bisa dibaca.");
+    console.warn("Tema tidak dapat dibaca.");
   }
 
   if (!["system", "light", "dark"].includes(savedTheme)) {
     savedTheme = "system";
   }
 
-  themeSelect.value = savedTheme;
+  if (themeSelect) themeSelect.value = savedTheme;
+
   applyTheme(savedTheme);
 }
 
-themeSelect.addEventListener("change", async () => {
+themeSelect?.addEventListener("change", async () => {
   const theme = themeSelect.value;
   applyTheme(theme);
 
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch (error) {
-    await appAlert(
-      "Pengaturan tema tidak bisa disimpan.",
-      "Penyimpanan gagal"
-    );
+    await appAlert("Tema gagal disimpan.");
     return;
   }
 
-  const themeNames = {
+  const names = {
     light: "Terang",
     dark: "Gelap",
     system: "Ikuti perangkat"
   };
 
   await appAlert(
-    `Tema APP AI sekarang: ${themeNames[theme] || theme}.`,
+    `Tema APP AI sekarang: ${names[theme]}.`,
     "Tema berhasil diubah"
   );
 });
 
 if (systemTheme.addEventListener) {
   systemTheme.addEventListener("change", () => {
-    if (themeSelect.value === "system") {
+    if (themeSelect?.value === "system") {
       applyTheme("system");
     }
   });
 }
 
 /* ========================================
-   5. MENAMPILKAN RIWAYAT
+   6. RIWAYAT OBROLAN
 ======================================== */
 
 function renderHistory(list = conversations) {
+  if (!historyList) return;
+
   historyList.replaceChildren();
 
   if (list.length === 0) {
@@ -485,7 +478,6 @@ function renderHistory(list = conversations) {
 
   list.forEach((chat) => {
     const button = document.createElement("button");
-
     button.type = "button";
     button.className = "history-item";
     button.textContent = chat.title;
@@ -497,13 +489,17 @@ function renderHistory(list = conversations) {
 
     button.addEventListener("click", () => {
       activeChatId = chat.id;
+
       renderHistory();
       renderMessages();
       renderBubbleMessages();
+
+      if (welcomeScreen) welcomeScreen.hidden = true;
+      if (chatMessages) chatMessages.hidden = false;
+
       closeMenu();
     });
 
-    // Tekan lama pada riwayat untuk menghapusnya.
     let holdTimer = null;
     let longPressTriggered = false;
 
@@ -528,17 +524,13 @@ function renderHistory(list = conversations) {
       }
     );
 
-    button.addEventListener(
-      "click",
-      (event) => {
-        if (longPressTriggered) {
-          event.stopImmediatePropagation();
-          event.preventDefault();
-          longPressTriggered = false;
-        }
-      },
-      true
-    );
+    button.addEventListener("click", (event) => {
+      if (longPressTriggered) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        longPressTriggered = false;
+      }
+    }, true);
 
     historyList.appendChild(button);
   });
@@ -552,9 +544,9 @@ async function deleteConversation(chatId) {
   if (!chat) return;
 
   const confirmed = await appConfirm(
-  `Hapus obrolan "${chat.title}"?`,
-  "Hapus obrolan"
-);
+    `Hapus obrolan "${chat.title}"?`,
+    "Hapus obrolan"
+  );
 
   if (!confirmed) return;
 
@@ -563,10 +555,9 @@ async function deleteConversation(chatId) {
   );
 
   if (activeChatId === chatId) {
-    activeChatId =
-      conversations.length > 0
-        ? conversations[0].id
-        : null;
+    activeChatId = conversations.length
+      ? conversations[0].id
+      : null;
   }
 
   if (!activeChatId) {
@@ -578,20 +569,26 @@ async function deleteConversation(chatId) {
   renderHistory();
   renderMessages();
   renderBubbleMessages();
+  updateProfileStatistics();
 }
 
 /* ========================================
-   6. MENAMPILKAN PESAN CHAT UTAMA
+   7. MENAMPILKAN PESAN
 ======================================== */
 
 function renderMessages() {
+  if (!chatMessages || !welcomeScreen) return;
+
   const chat = getActiveChat();
 
   chatMessages.replaceChildren();
 
-  welcomeScreen.hidden = Boolean(
+  const hasMessages = Boolean(
     chat && chat.messages.length > 0
   );
+
+  welcomeScreen.hidden = hasMessages;
+  chatMessages.hidden = !hasMessages;
 
   if (!chat) return;
 
@@ -603,6 +600,7 @@ function renderMessages() {
       (message.role === "user" ? "user" : "ai");
 
     bubble.textContent = message.text || "";
+
     chatMessages.appendChild(bubble);
   });
 
@@ -612,9 +610,7 @@ function renderMessages() {
 function addMessage(role, text) {
   let chat = getActiveChat();
 
-  if (!chat) {
-    chat = createChat();
-  }
+  if (!chat) chat = createChat();
 
   chat.messages.push({
     role,
@@ -625,7 +621,9 @@ function addMessage(role, text) {
   if (
     role === "user" &&
     chat.title === "Obrolan baru" &&
-    chat.messages.filter((item) => item.role === "user").length === 1
+    chat.messages.filter(
+      (item) => item.role === "user"
+    ).length === 1
   ) {
     chat.title = text.trim().slice(0, 35) || "Obrolan baru";
   }
@@ -636,97 +634,80 @@ function addMessage(role, text) {
   renderHistory();
   renderMessages();
   renderBubbleMessages();
+  updateProfileStatistics();
 }
 
-
 /* ========================================
-   7. MENGIRIM PESAN UTAMA KE AI
+   8. MODE DEMO CHAT
+   Belum menggunakan API key.
 ======================================== */
+
+function getDemoReply(text) {
+  const lower = text.toLowerCase();
+
+  if (lower.includes("halo") || lower.includes("hai")) {
+    return "Halo! 👋 Selamat datang di APP AI. Saat ini saya berjalan dalam mode demo.";
+  }
+
+  if (lower.includes("nama kamu")) {
+    return "Saya APP AI, asisten virtual dalam aplikasi ini.";
+  }
+
+  if (lower.includes("html")) {
+    return "HTML adalah bahasa markup untuk membuat struktur halaman web. Contohnya: heading, paragraf, gambar, dan tombol.";
+  }
+
+  if (lower.includes("css")) {
+    return "CSS digunakan untuk mengatur tampilan halaman web, seperti warna, ukuran, jarak, layout, dan animasi.";
+  }
+
+  if (lower.includes("javascript") || lower.includes("js")) {
+    return "JavaScript digunakan untuk membuat halaman web menjadi interaktif, misalnya tombol, menu, dan pengolahan data.";
+  }
+
+  if (lower.includes("terima kasih")) {
+    return "Sama-sama! Senang bisa membantu. 😊";
+  }
+
+  return "Pesan kamu berhasil diterima! Saat ini APP AI masih dalam mode demo dan belum terhubung ke layanan AI. Setelah fitur aplikasi selesai diuji, kita bisa memasang API baru.";
+}
 
 async function sendMessageToAI(text) {
   const chat = getActiveChat();
 
-  if (!chat) {
-    await appAlert("Obrolan tidak ditemukan.");
-    return;
-  }
+  if (!chat) return;
 
-  // Ambil riwayat sebelum pesan terbaru.
-  const history = chat.messages
-    .slice(0, -1)
-    .filter((message) =>
-      ["user", "assistant"].includes(message.role)
-    )
-    .slice(-10)
-    .map((message) => ({
-      role: message.role,
-      content: message.text || ""
-    }));
+  if (sendBtn) sendBtn.disabled = true;
+  if (bubbleSendBtn) bubbleSendBtn.disabled = true;
 
   try {
-    const response = await fetch(
-      "https://project-6yqhq.vercel.app/api/chat",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: text,
-          history
-        })
-      }
-    );
+    // Simulasi balasan tanpa API.
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const data = await response.json();
+    const reply = getDemoReply(text);
 
-if (!response.ok) {
-  console.error("Detail error dari backend:", {
-    status: response.status,
-    error: data.error,
-    detail: data.detail
-  });
-
-  throw new Error(
-    `${data.error || "Permintaan AI gagal"} | ` +
-    `Status: ${data.status || response.status} | ` +
-    `Detail: ${data.detail || "Tidak ada detail"}`
-  );
-}
-
-    if (typeof data.reply !== "string") {
-      throw new Error("Balasan AI tidak valid.");
-    }
-
-    addMessage("assistant", data.reply);
+    addMessage("assistant", reply);
   } catch (error) {
-    console.error("Kesalahan menghubungi AI:", error);
+    console.error("Kesalahan mode demo:", error);
 
-    
-const pesanError = error?.message || "";
-
-if (
-  pesanError.includes("credit_balance_exhausted") ||
-  pesanError.includes("insufficient_quota") ||
-  pesanError.includes("no credits remaining") ||
-  pesanError.includes("Status: 429")
-) {
-  await appAlert(
-    "Kredit OpenAI API habis. AI belum bisa membalas. Periksa saldo API atau gunakan layanan AI lain.",
-    "Kredit AI Habis"
-  );
-} else {
-  await appAlert(
-    `AI belum bisa membalas.\n\nDetail: ${pesanError || "Terjadi kesalahan yang tidak diketahui."}`,
-    "Gagal Menghubungi AI"
-  );
+    await appAlert(
+      "Terjadi kesalahan saat menampilkan balasan.",
+      "Kesalahan"
+    );
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    if (bubbleSendBtn) bubbleSendBtn.disabled = false;
+  }
 }
 
+/* ========================================
+   9. FORM CHAT UTAMA
+======================================== */
 
-chatForm.addEventListener("submit", async (event) => {
+chatForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const text = messageInput.value.trim();
+  const text = messageInput?.value.trim();
 
   if (!text) return;
 
@@ -739,22 +720,22 @@ chatForm.addEventListener("submit", async (event) => {
   await sendMessageToAI(text);
 });
 
-messageInput.addEventListener("keydown", (event) => {
+messageInput?.addEventListener("keydown", (event) => {
   if (
     event.key === "Enter" &&
     !event.shiftKey &&
     !event.isComposing
   ) {
     event.preventDefault();
-    chatForm.requestSubmit();
+    chatForm?.requestSubmit();
   }
 });
 
 /* ========================================
-   8. EDIT NAMA OBROLAN
+   10. EDIT NAMA OBROLAN
 ======================================== */
 
-renameChatBtn.addEventListener("click", async () => {
+renameChatBtn?.addEventListener("click", async () => {
   const chat = getActiveChat();
 
   if (!chat) return;
@@ -767,17 +748,7 @@ renameChatBtn.addEventListener("click", async () => {
 
   if (newTitle === null) return;
 
-  const cleanedTitle = newTitle.trim();
-
-  if (!cleanedTitle) {
-    await appAlert(
-      "Nama obrolan tidak boleh kosong.",
-      "Nama belum diisi"
-    );
-    return;
-  }
-
-  chat.title = cleanedTitle.slice(0, 80);
+  chat.title = newTitle.trim().slice(0, 80);
   chat.updatedAt = Date.now();
 
   saveConversations();
@@ -786,7 +757,7 @@ renameChatBtn.addEventListener("click", async () => {
 });
 
 /* ========================================
-   9. PENCARIAN RIWAYAT
+   11. PENCARIAN RIWAYAT
 ======================================== */
 
 function searchConversations(keyword) {
@@ -814,26 +785,31 @@ function searchConversations(keyword) {
   renderHistory(results);
 }
 
-searchBtn.addEventListener("click", () => {
+searchBtn?.addEventListener("click", () => {
+  if (!searchPanel) return;
+
   searchPanel.hidden = false;
-  historySearchInput.focus();
+  historySearchInput?.focus();
 });
 
-historySearchInput.addEventListener("input", () => {
+historySearchInput?.addEventListener("input", () => {
   searchConversations(historySearchInput.value);
 });
 
-closeSearchBtn.addEventListener("click", () => {
-  historySearchInput.value = "";
-  searchPanel.hidden = true;
+closeSearchBtn?.addEventListener("click", () => {
+  if (historySearchInput) historySearchInput.value = "";
+  if (searchPanel) searchPanel.hidden = true;
+
   renderHistory();
 });
 
 /* ========================================
-   10. GELEMBUNG CHAT
+   12. BUBBLE CHAT
 ======================================== */
 
 function toggleFloatingBubble() {
+  if (!floatingBubble) return;
+
   floatingBubble.hidden = !floatingBubble.hidden;
 
   if (floatingBubble.hidden) {
@@ -842,35 +818,36 @@ function toggleFloatingBubble() {
 }
 
 function openBubbleWindow() {
+  if (!floatingBubble || !bubbleWindow) return;
+
   floatingBubble.hidden = false;
   bubbleWindow.hidden = false;
+
   renderBubbleMessages();
-  bubbleInput.focus();
+  bubbleInput?.focus();
 }
 
 function closeBubbleWindow() {
-  bubbleWindow.hidden = true;
+  if (bubbleWindow) bubbleWindow.hidden = true;
 }
 
-bubbleBtn.addEventListener("click", toggleFloatingBubble);
+bubbleBtn?.addEventListener("click", toggleFloatingBubble);
 
-bubbleMenuBtn.addEventListener("click", () => {
+bubbleMenuBtn?.addEventListener("click", () => {
   toggleFloatingBubble();
   closeMenu();
 });
 
-floatingBubble.addEventListener("click", openBubbleWindow);
+floatingBubble?.addEventListener("click", openBubbleWindow);
 
-closeBubbleWindowBtn.addEventListener(
+closeBubbleWindowBtn?.addEventListener(
   "click",
   closeBubbleWindow
 );
 
-/* ========================================
-   11. PESAN DI JENDELA GELEMBUNG
-======================================== */
-
 function renderBubbleMessages() {
+  if (!bubbleMessages) return;
+
   const chat = getActiveChat();
 
   bubbleMessages.replaceChildren();
@@ -885,16 +862,17 @@ function renderBubbleMessages() {
       (message.role === "user" ? "user" : "ai");
 
     bubble.textContent = message.text || "";
+
     bubbleMessages.appendChild(bubble);
   });
 
   bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
 }
 
-bubbleForm.addEventListener("submit", async (event) => {
+bubbleForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const text = bubbleInput.value.trim();
+  const text = bubbleInput?.value.trim();
 
   if (!text) return;
 
@@ -907,24 +885,24 @@ bubbleForm.addEventListener("submit", async (event) => {
   await sendMessageToAI(text);
 });
 
-bubbleInput.addEventListener("keydown", (event) => {
+bubbleInput?.addEventListener("keydown", (event) => {
   if (
     event.key === "Enter" &&
     !event.shiftKey &&
     !event.isComposing
   ) {
     event.preventDefault();
-    bubbleForm.requestSubmit();
+    bubbleForm?.requestSubmit();
   }
 });
 
 /* ========================================
-   12. MEMINDAHKAN GELEMBUNG
+   13. MEMINDAHKAN BUBBLE
 ======================================== */
 
 let dragState = null;
 
-floatingBubble.addEventListener("pointerdown", (event) => {
+floatingBubble?.addEventListener("pointerdown", (event) => {
   if (event.button !== 0) return;
 
   const rect = floatingBubble.getBoundingClientRect();
@@ -941,7 +919,7 @@ floatingBubble.addEventListener("pointerdown", (event) => {
   floatingBubble.setPointerCapture(event.pointerId);
 });
 
-floatingBubble.addEventListener("pointermove", (event) => {
+floatingBubble?.addEventListener("pointermove", (event) => {
   if (!dragState) return;
   if (event.pointerId !== dragState.pointerId) return;
 
@@ -954,8 +932,11 @@ floatingBubble.addEventListener("pointermove", (event) => {
 
   if (!dragState.moved) return;
 
-  const maxLeft = window.innerWidth - floatingBubble.offsetWidth;
-  const maxTop = window.innerHeight - floatingBubble.offsetHeight;
+  const maxLeft =
+    window.innerWidth - floatingBubble.offsetWidth;
+
+  const maxTop =
+    window.innerHeight - floatingBubble.offsetHeight;
 
   const left = Math.max(
     0,
@@ -973,74 +954,128 @@ floatingBubble.addEventListener("pointermove", (event) => {
   floatingBubble.style.bottom = "auto";
 });
 
-floatingBubble.addEventListener("pointerup", () => {
-  if (dragState && dragState.moved) {
-    // Mencegah klik membuka jendela setelah gelembung digeser.
+floatingBubble?.addEventListener("pointerup", () => {
+  if (dragState?.moved) {
     floatingBubble.dataset.dragged = "true";
   }
 
   dragState = null;
 });
 
-floatingBubble.addEventListener("pointercancel", () => {
+floatingBubble?.addEventListener("pointercancel", () => {
   dragState = null;
 });
 
-floatingBubble.addEventListener(
-  "click",
-  (event) => {
-    if (floatingBubble.dataset.dragged === "true") {
-      event.stopImmediatePropagation();
-      event.preventDefault();
-      delete floatingBubble.dataset.dragged;
-    }
-  },
-  true
-);
+floatingBubble?.addEventListener("click", (event) => {
+  if (floatingBubble.dataset.dragged === "true") {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    delete floatingBubble.dataset.dragged;
+  }
+}, true);
 
 /* ========================================
-   13. MEMILIH FILE
+   14. MEMILIH FILE
 ======================================== */
 
-fileInput.addEventListener("change", () => {
-  const file = fileInput.files[0];
+fileInput?.addEventListener("change", () => {
+  const file = fileInput.files?.[0];
 
   if (!file) {
-    fileStatus.textContent = "";
+    if (fileStatus) fileStatus.textContent = "";
     return;
   }
 
   const maxSize = 10 * 1024 * 1024;
 
   if (file.size > maxSize) {
-    fileStatus.textContent =
-      "File melebihi batas demo 10 MB.";
+    if (fileStatus) {
+      fileStatus.textContent = "File melebihi batas 10 MB.";
+    }
 
     fileInput.value = "";
     return;
   }
 
-  fileStatus.textContent =
-    `File dipilih: ${file.name}. ` +
-    "Pengiriman file ke AI belum diaktifkan.";
+  if (fileStatus) {
+    fileStatus.textContent =
+      `File dipilih: ${file.name}. Pengiriman ke AI belum diaktifkan.`;
+  }
 });
 
 /* ========================================
-   14. TOMBOL SUARA
+   15. TOMBOL SUARA
 ======================================== */
 
-voiceBtn.addEventListener("click", () => {
-appAlert(
-  "Obrolan tidak bisa disimpan. Periksa ruang penyimpanan browser HP.",
-  "Penyimpanan gagal"
-);
-});
+let speechRecognition = null;
+let isListening = false;
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+if (voiceBtn) {
+  if (SpeechRecognition) {
+    speechRecognition = new SpeechRecognition();
+    speechRecognition.lang = "id-ID";
+    speechRecognition.continuous = false;
+    speechRecognition.interimResults = false;
+
+    speechRecognition.onstart = () => {
+      isListening = true;
+      voiceBtn.classList.add("listening");
+      voiceBtn.setAttribute("aria-label", "Berhenti merekam");
+    };
+
+    speechRecognition.onresult = (event) => {
+      const transcript =
+        event.results[0][0].transcript;
+
+      messageInput.value =
+        `${messageInput.value} ${transcript}`.trim();
+
+      resizeTextarea(messageInput);
+      messageInput.focus();
+    };
+
+    speechRecognition.onerror = (event) => {
+      console.error("Kesalahan suara:", event.error);
+    };
+
+    speechRecognition.onend = () => {
+      isListening = false;
+      voiceBtn.classList.remove("listening");
+      voiceBtn.setAttribute("aria-label", "Input suara");
+    };
+
+    voiceBtn.addEventListener("click", () => {
+      if (isListening) {
+        speechRecognition.stop();
+      } else {
+        try {
+          speechRecognition.start();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
+  } else {
+    voiceBtn.addEventListener("click", () => {
+      appAlert(
+        "Browser ini belum mendukung input suara. Coba gunakan browser yang mendukung Speech Recognition.",
+        "Fitur suara tidak tersedia"
+      );
+    });
+  }
+}
 
 /* ========================================
-   15. UKURAN INPUT OTOMATIS
+   16. UKURAN INPUT OTOMATIS
 ======================================== */
 
 function resizeTextarea(textarea) {
+  if (!textarea) return;
+
   textarea.style.height = "auto";
 
   const maxHeight = parseInt(
@@ -1053,281 +1088,328 @@ function resizeTextarea(textarea) {
 }
 
 [messageInput, bubbleInput].forEach((textarea) => {
-  textarea.addEventListener("input", () => {
+  textarea?.addEventListener("input", () => {
     resizeTextarea(textarea);
   });
 });
 
 /* ========================================
-   16. MEMULAI APLIKASI
+   17. PROFIL PENGGUNA
 ======================================== */
 
-loadTheme();
-loadConversations();
+const profilePage = $("profilePage");
+const profileBtn = $("profileBtn");
+const backProfileBtn = $("backProfileBtn");
+const profileForm = $("profileForm");
 
-/* =====================================
-   APP AI — PROFIL PENGGUNA
-===================================== */
+const profileNameInput = $("profileNameInput");
+const profileBirthDate = $("profileBirthDate");
 
-(() => {
-  const profilePage = document.getElementById("profilePage");
-  const profileBtn = document.getElementById("profileBtn");
-  const backBtn = document.getElementById("backProfileBtn");
-  const form = document.getElementById("profileForm");
+const statusSchool = $("statusSchool");
+const statusWork = $("statusWork");
 
-  if (!profilePage || !form) {
-    console.error("HTML profil APP AI belum ditemukan.");
-    return;
+const profileSchoolLevel = $("profileSchoolLevel");
+const openSchoolLevelModal = $("openSchoolLevelModal");
+const schoolLevelLabel = $("schoolLevelLabel");
+
+const schoolFields = $("schoolFields");
+const majorField = $("majorField");
+const profileMajor = $("profileMajor");
+
+const workFields = $("workFields");
+const profileJob = $("profileJob");
+
+const profileDisplayName = $("profileDisplayName");
+const profileAvatar = $("profileAvatar");
+const profileStatus = $("profileStatus");
+
+const profileChatCount = $("profileChatCount");
+const profileMessageCount = $("profileMessageCount");
+
+function getProfile() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(PROFILE_KEY)
+    ) || {};
+  } catch (error) {
+    console.error("Gagal membaca profil:", error);
+    return {};
   }
-
-  const nameInput = document.getElementById("profileNameInput");
-  const birthInput = document.getElementById("profileBirthDate");
-  const schoolRadio = document.getElementById("statusSchool");
-  const workRadio = document.getElementById("statusWork");
-  const levelSelect = document.getElementById("profileSchoolLevel");
-   
-const openSchoolLevelModal = document.getElementById(
-  "openSchoolLevelModal"
-);
-const schoolLevelLabel = document.getElementById(
-  "schoolLevelLabel"
-);
-
-function syncSchoolLevelLabel() {
-  schoolLevelLabel.textContent = levelSelect.value || "Pilih jenjang";
 }
 
-openSchoolLevelModal.addEventListener("click", async () => {
-  const selectedLevel = await showAppModal({
-    title: "Jenjang sekolah",
-    message: "Pilih jenjang pendidikan kamu.",
-    type: "select",
-    value: levelSelect.value,
-    options: [
-      { value: "SD", label: "SD" },
-      { value: "SMP", label: "SMP" },
-      { value: "SMA", label: "SMA" },
-      { value: "SMK", label: "SMK" }
-    ],
-    confirmText: "Pilih",
-    cancelText: "Batal"
-  });
+function updateIdentity(name) {
+  const cleanName = name.trim();
+  const shownName = cleanName || "Pengguna APP AI";
 
-  if (selectedLevel === null) return;
-
-  levelSelect.value = selectedLevel;
-  syncSchoolLevelLabel();
-  updateConditionalFields();
-
-  levelSelect.dispatchEvent(new Event("change", {
-    bubbles: true
-  }));
-});
-
-  const majorInput = document.getElementById("profileMajor");
-  const jobInput = document.getElementById("profileJob");
-
-  const schoolFields = document.getElementById("schoolFields");
-  const majorField = document.getElementById("majorField");
-  const workFields = document.getElementById("workFields");
-
-  const displayName = document.getElementById("profileDisplayName");
-  const avatar = document.getElementById("profileAvatar");
-  const statusMessage = document.getElementById("profileStatus");
-
-  const chatCount = document.getElementById("profileChatCount");
-  const messageCount = document.getElementById("profileMessageCount");
-
-  const PROFILE_KEY = "faizAIProfile";
-
-  function getProfile() {
-    try {
-      return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {};
-    } catch {
-      return {};
-    }
+  if (profileDisplayName) {
+    profileDisplayName.textContent = shownName;
   }
 
-  function updateConditionalFields() {
-    const isSchool = schoolRadio.checked;
-    const isWork = workRadio.checked;
-    const isSMK = isSchool && levelSelect.value === "SMK";
-
-    schoolFields.hidden = !isSchool;
-    workFields.hidden = !isWork;
-    majorField.hidden = !isSMK;
-
-    levelSelect.required = isSchool;
-    majorInput.required = isSMK;
-    jobInput.required = isWork;
-  }
-
-  function updateIdentity(name) {
-    const cleanName = name.trim();
-    const shownName = cleanName || "Pengguna APP AI";
-
-    displayName.textContent = shownName;
-    avatar.textContent = cleanName
+  if (profileAvatar) {
+    profileAvatar.textContent = cleanName
       ? cleanName.charAt(0).toUpperCase()
       : "U";
   }
+}
 
-  function renderStatistics() {
-    // Menggunakan data percakapan APP AI yang sudah ada.
-    const chats = Array.isArray(conversations)
-      ? conversations
-      : [];
+function syncSchoolLevelLabel() {
+  if (schoolLevelLabel && profileSchoolLevel) {
+    schoolLevelLabel.textContent =
+      profileSchoolLevel.value || "Pilih jenjang";
+  }
+}
 
-    const totalMessages = chats.reduce((total, chat) => {
+function updateConditionalFields() {
+  const isSchool = Boolean(statusSchool?.checked);
+  const isWork = Boolean(statusWork?.checked);
+  const isSMK =
+    isSchool && profileSchoolLevel?.value === "SMK";
+
+  if (schoolFields) schoolFields.hidden = !isSchool;
+  if (workFields) workFields.hidden = !isWork;
+  if (majorField) majorField.hidden = !isSMK;
+
+  if (profileSchoolLevel) {
+    profileSchoolLevel.required = isSchool;
+  }
+
+  if (profileMajor) {
+    profileMajor.required = isSMK;
+  }
+
+  if (profileJob) {
+    profileJob.required = isWork;
+  }
+}
+
+function updateProfileStatistics() {
+  if (!profileChatCount || !profileMessageCount) return;
+
+  const totalMessages = conversations.reduce(
+    (total, chat) => {
       return total + (
         Array.isArray(chat.messages)
           ? chat.messages.length
           : 0
       );
-    }, 0);
+    },
+    0
+  );
 
-    chatCount.textContent = chats.length;
-    messageCount.textContent = totalMessages;
+  profileChatCount.textContent = conversations.length;
+  profileMessageCount.textContent = totalMessages;
+}
+
+function loadProfile() {
+  const profile = getProfile();
+
+  if (profileNameInput) {
+    profileNameInput.value = profile.name || "";
   }
 
-  function loadProfile() {
-    const profile = getProfile();
-
-    nameInput.value = profile.name || "";
-    birthInput.value = profile.birthDate || "";
-
-    schoolRadio.checked = profile.status !== "bekerja";
-    workRadio.checked = profile.status === "bekerja";
-
-    levelSelect.value = profile.schoolLevel || "SMK";
-    majorInput.value = profile.major || "";
-    jobInput.value = profile.job || "";
-
-    updateConditionalFields();
-    syncSchoolLevelLabel();
-    updateIdentity(nameInput.value);
-    renderStatistics();
+  if (profileBirthDate) {
+    profileBirthDate.value = profile.birthDate || "";
   }
 
-  function saveProfile(event) {
-    event.preventDefault();
+  if (statusSchool) {
+    statusSchool.checked = profile.status !== "bekerja";
+  }
 
-    const name = nameInput.value.trim();
+  if (statusWork) {
+    statusWork.checked = profile.status === "bekerja";
+  }
 
-    if (!name) {
-      statusMessage.textContent = "Nama lengkap wajib diisi.";
-      nameInput.focus();
-      return;
+  if (profileSchoolLevel) {
+    profileSchoolLevel.value = profile.schoolLevel || "SMK";
+  }
+
+  if (profileMajor) {
+    profileMajor.value = profile.major || "";
+  }
+
+  if (profileJob) {
+    profileJob.value = profile.job || "";
+  }
+
+  updateConditionalFields();
+  syncSchoolLevelLabel();
+  updateIdentity(profile.name || "");
+  updateProfileStatistics();
+}
+
+function saveProfile(event) {
+  event.preventDefault();
+
+  const name = profileNameInput?.value.trim() || "";
+
+  if (!name) {
+    if (profileStatus) {
+      profileStatus.textContent = "Nama lengkap wajib diisi.";
     }
 
-    const profile = {
-      name,
-      birthDate: birthInput.value,
-      status: schoolRadio.checked ? "sekolah" : "bekerja",
-      schoolLevel: schoolRadio.checked ? levelSelect.value : "",
-      major: schoolRadio.checked && levelSelect.value === "SMK"
-        ? majorInput.value.trim()
+    profileNameInput?.focus();
+    return;
+  }
+
+  const isSchool = Boolean(statusSchool?.checked);
+
+  const profile = {
+    name,
+    birthDate: profileBirthDate?.value || "",
+    status: isSchool ? "sekolah" : "bekerja",
+    schoolLevel: isSchool
+      ? profileSchoolLevel?.value || ""
+      : "",
+    major: isSchool &&
+      profileSchoolLevel?.value === "SMK"
+        ? profileMajor?.value.trim() || ""
         : "",
-      job: workRadio.checked ? jobInput.value.trim() : ""
-    };
+    job: !isSchool
+      ? profileJob?.value.trim() || ""
+      : ""
+  };
 
-    if (profile.status === "sekolah" && !profile.schoolLevel) {
-      statusMessage.textContent = "Pilih jenjang sekolah.";
-      return;
+  if (profile.status === "sekolah" && !profile.schoolLevel) {
+    profileStatus.textContent = "Pilih jenjang sekolah.";
+    return;
+  }
+
+  if (
+    profile.status === "sekolah" &&
+    profile.schoolLevel === "SMK" &&
+    !profile.major
+  ) {
+    profileStatus.textContent = "Masukkan jurusan SMK.";
+    profileMajor?.focus();
+    return;
+  }
+
+  if (profile.status === "bekerja" && !profile.job) {
+    profileStatus.textContent = "Masukkan pekerjaan.";
+    profileJob?.focus();
+    return;
+  }
+
+  try {
+    localStorage.setItem(
+      PROFILE_KEY,
+      JSON.stringify(profile)
+    );
+
+    updateIdentity(profile.name);
+
+    if (profileStatus) {
+      profileStatus.textContent = "Profil berhasil disimpan!";
     }
+  } catch (error) {
+    console.error(error);
 
-    if (profile.status === "sekolah" &&
-        profile.schoolLevel === "SMK" &&
-        !profile.major) {
-      statusMessage.textContent = "Masukkan jurusan SMK.";
-      majorInput.focus();
-      return;
-    }
-
-    if (profile.status === "bekerja" && !profile.job) {
-      statusMessage.textContent = "Masukkan nama pekerjaan.";
-      jobInput.focus();
-      return;
-    }
-
-    try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-      updateIdentity(profile.name);
-      statusMessage.textContent = "Profil berhasil disimpan!";
-    } catch (error) {
-      console.error(error);
-      statusMessage.textContent =
+    if (profileStatus) {
+      profileStatus.textContent =
         "Profil gagal disimpan. Periksa penyimpanan browser.";
     }
   }
-
-  function openProfile() {
-
-  profilePage.hidden = false;
-     
-    // Tampilkan profil sebagai layar penuh di atas aplikasi.
-    Object.assign(profilePage.style, {
-      position: "fixed",
-      inset: "0",
-      zIndex: "1000",
-      width: "100%",
-      maxWidth: "none",
-      height: "100%",
-      overflowY: "auto",
-      boxSizing: "border-box",
-      background: "#0b1020"
-    });
-
-    loadProfile();
-
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("menuOverlay");
-
-    if (sidebar && !sidebar.hidden) closeMenu();
-    if (overlay) overlay.hidden = true;
-  }
-
-  function closeProfile() {
-    profilePage.hidden = true;
-
-    // Kembalikan gaya awal untuk penggunaan berikutnya.
-    profilePage.style.position = "";
-    profilePage.style.inset = "";
-    profilePage.style.zIndex = "";
-    profilePage.style.width = "";
-    profilePage.style.maxWidth = "";
-    profilePage.style.height = "";
-    profilePage.style.overflowY = "";
-    profilePage.style.boxSizing = "";
-    profilePage.style.background = "";
-  }
-
-  schoolRadio.addEventListener("change", updateConditionalFields);
-  workRadio.addEventListener("change", updateConditionalFields);
-  levelSelect.addEventListener("change", updateConditionalFields);
-
-  nameInput.addEventListener("input", () => {
-    updateIdentity(nameInput.value);
-  });
-
-  form.addEventListener("submit", saveProfile);
-
-if (profileBtn) {
-  profileBtn.addEventListener("click", openProfile);
 }
 
-  if (backBtn) {
-    backBtn.addEventListener("click", closeProfile);
-  }
+function openProfile() {
+  if (!profilePage) return;
 
-  // Perbarui statistik ketika ada perubahan percakapan.
-  const originalRenderHistory = renderHistory;
+  closeMenu();
 
-  renderHistory = function (...args) {
-    const result = originalRenderHistory.apply(this, args);
-    renderStatistics();
-    return result;
-  };
+  profilePage.hidden = false;
+
+  Object.assign(profilePage.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "1000",
+    width: "100%",
+    maxWidth: "none",
+    height: "100%",
+    overflowY: "auto",
+    boxSizing: "border-box"
+  });
 
   loadProfile();
-})();
+}
+
+function closeProfile() {
+  if (!profilePage || profilePage.hidden) return;
+
+  profilePage.hidden = true;
+
+  [
+    "position",
+    "inset",
+    "zIndex",
+    "width",
+    "maxWidth",
+    "height",
+    "overflowY",
+    "boxSizing"
+  ].forEach((property) => {
+    profilePage.style[property] = "";
+  });
+}
+
+statusSchool?.addEventListener(
+  "change",
+  updateConditionalFields
+);
+
+statusWork?.addEventListener(
+  "change",
+  updateConditionalFields
+);
+
+profileSchoolLevel?.addEventListener("change", () => {
+  updateConditionalFields();
+  syncSchoolLevelLabel();
+});
+
+profileNameInput?.addEventListener("input", () => {
+  updateIdentity(profileNameInput.value);
+});
+
+openSchoolLevelModal?.addEventListener(
+  "click",
+  async () => {
+    const selectedLevel = await showAppModal({
+      title: "Jenjang sekolah",
+      message: "Pilih jenjang pendidikan kamu.",
+      type: "select",
+      value: profileSchoolLevel?.value || "SMK",
+      options: [
+        { value: "SD", label: "SD" },
+        { value: "SMP", label: "SMP" },
+        { value: "SMA", label: "SMA" },
+        { value: "SMK", label: "SMK" }
+      ],
+      confirmText: "Pilih",
+      cancelText: "Batal"
+    });
+
+    if (selectedLevel === null) return;
+
+    if (profileSchoolLevel) {
+      profileSchoolLevel.value = selectedLevel;
+      profileSchoolLevel.dispatchEvent(
+        new Event("change", { bubbles: true })
+      );
+    }
+  }
+);
+
+profileForm?.addEventListener("submit", saveProfile);
+
+profileBtn?.addEventListener("click", openProfile);
+backProfileBtn?.addEventListener("click", closeProfile);
+
+/* ========================================
+   18. MEMULAI APLIKASI
+======================================== */
+
+loadTheme();
+loadConversations();
+loadProfile();
+
+console.log("APP AI berhasil dimuat.");

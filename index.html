@@ -13,36 +13,30 @@
 
   <div class="app-container">
 
-    <!-- HEADER -->
     <header class="app-header">
-      <button id="homeBtn" class="logo" aria-label="Beranda">
+      <button id="homeBtn" class="logo" type="button" aria-label="Beranda">
         APP AI
       </button>
 
       <div class="header-actions">
-        <button id="bubbleBtn" class="bubble-btn"
-          type="button" aria-label="Tampilkan gelembung chat">
+        <button id="bubbleBtn" class="bubble-btn" type="button"
+          aria-label="Tampilkan gelembung chat">
           <span class="bubble-icon"></span>
         </button>
 
-        <button id="menuBtn" class="menu-btn"
-          type="button" aria-label="Buka menu"
-          aria-expanded="false">
+        <button id="menuBtn" class="menu-btn" type="button"
+          aria-label="Buka menu" aria-expanded="false">
           ☰
         </button>
       </div>
     </header>
 
-    <!-- OVERLAY DAN MENU SAMPING -->
     <div id="menuOverlay" class="menu-overlay" hidden></div>
 
-    <aside id="sidebar" class="sidebar"
-      aria-label="Menu navigasi" hidden>
-
+    <aside id="sidebar" class="sidebar" aria-label="Menu navigasi" hidden>
       <div class="sidebar-header">
         <h2>Menu</h2>
-        <button id="closeMenuBtn" type="button"
-          aria-label="Tutup menu">✕</button>
+        <button id="closeMenuBtn" type="button" aria-label="Tutup menu">✕</button>
       </div>
 
       <button id="newChatBtn" type="button">
@@ -60,7 +54,6 @@
         <span>Cari obrolan</span>
       </button>
 
-      <!-- RIWAYAT CHAT -->
       <section class="history-section">
         <div class="history-header">
           <h3>Riwayat obrolan</h3>
@@ -69,12 +62,8 @@
         <div id="searchPanel" hidden>
           <input id="historySearchInput" type="search"
             placeholder="Cari judul atau isi obrolan..."
-            autocomplete="off"
-            aria-label="Cari riwayat obrolan">
-
-          <button id="closeSearchBtn" type="button">
-            Tutup pencarian
-          </button>
+            autocomplete="off" aria-label="Cari riwayat obrolan">
+          <button id="closeSearchBtn" type="button">Tutup pencarian</button>
         </div>
 
         <div id="historyList">
@@ -82,7 +71,6 @@
         </div>
       </section>
 
-      <!-- PENGATURAN -->
       <section class="settings-section">
         <h3>Pengaturan</h3>
 
@@ -103,25 +91,18 @@
           <span>App Bubbles</span>
         </button>
 
-<button
-  id="profileBtn"
-  class="profile-menu-btn"
-  type="button"
->
-  <span class="profile-avatar">👤</span>
-  <span class="profile-info">
-    <strong>Pengguna</strong>
-    <small>Akun pribadi</small>
-  </span>
-  <span class="profile-arrow">›</span>
-</button>
-
+        <button id="profileBtn" class="profile-menu-btn" type="button">
+          <span class="profile-avatar">👤</span>
+          <span class="profile-info">
+            <strong>Profil pengguna</strong>
+            <small>Akun pribadi</small>
+          </span>
+          <span class="profile-arrow">›</span>
+        </button>
       </section>
     </aside>
 
-    <!-- AREA UTAMA -->
     <main id="mainContent">
-
       <section id="welcomeScreen" class="welcome-screen">
         <div class="ai-avatar">AI</div>
         <h1>Ada yang bisa saya bantu?</h1>
@@ -129,53 +110,38 @@
       </section>
 
       <section id="chatMessages" class="chat-messages"
-        aria-live="polite" aria-label="Pesan obrolan">
+        aria-live="polite" aria-label="Pesan obrolan" hidden>
       </section>
     </main>
 
-    <!-- AREA INPUT -->
     <footer class="chat-footer">
       <form id="chatForm">
         <div class="message-input-area">
-
           <label for="fileInput" class="tool-btn attach-btn"
-            aria-label="Pilih file" title="Lampirkan file">
-            +
-          </label>
+            aria-label="Pilih file" title="Lampirkan file">+</label>
 
           <input id="fileInput" type="file"
             accept="image/*,.pdf,.txt,.doc,.docx" hidden>
 
           <textarea id="messageInput" rows="1"
-            placeholder="Tulis pesan..."
-            aria-label="Tulis pesan"></textarea>
+            placeholder="Tulis pesan..." aria-label="Tulis pesan"></textarea>
 
-          <button id="voiceBtn" type="button"
-            class="tool-btn voice-btn"
-            aria-label="Fitur suara" title="Fitur suara">
-            🎙️
-          </button>
+          <button id="voiceBtn" type="button" class="tool-btn voice-btn"
+            aria-label="Input suara" title="Input suara">🎙️</button>
 
           <button id="sendBtn" type="submit"
-            aria-label="Kirim pesan" title="Kirim pesan">
-            ↑
-          </button>
+            aria-label="Kirim pesan" title="Kirim pesan">↑</button>
         </div>
 
-        <p id="fileStatus" class="file-status"
-          aria-live="polite"></p>
+        <p id="fileStatus" class="file-status" aria-live="polite"></p>
       </form>
     </footer>
 
   </div>
 
-  <!-- GELEMBUNG CHAT MENGAMBANG -->
-  <button id="floatingBubble" class="floating-bubble"
-    type="button" aria-label="Buka obrolan mengambang" hidden>
-    AI
-  </button>
+  <button id="floatingBubble" class="floating-bubble" type="button"
+    aria-label="Buka obrolan mengambang" hidden>AI</button>
 
-  <!-- JENDELA CHAT MENGAMBANG -->
   <section id="bubbleWindow" class="bubble-window"
     aria-label="Obrolan mengambang" hidden>
 
@@ -187,248 +153,137 @@
           <small>Asisten pribadi</small>
         </div>
       </div>
-      
-      <button id="closeBubbleWindowBtn"
-        type="button" aria-label="Tutup jendela chat">✕</button>
+
+      <button id="closeBubbleWindowBtn" type="button"
+        aria-label="Tutup jendela chat">✕</button>
     </header>
-    
-    <div id="bubbleMessages" class="bubble-messages"
-      aria-live="polite">
-    </div>
+
+    <div id="bubbleMessages" class="bubble-messages" aria-live="polite"></div>
 
     <form id="bubbleForm" class="bubble-form">
       <textarea id="bubbleInput" rows="1"
-        placeholder="Tulis pesan..."
-        aria-label="Tulis pesan gelembung"></textarea>
-
-      <button id="bubbleSendBtn" type="submit"
-        aria-label="Kirim pesan">↑</button>
+        placeholder="Tulis pesan..." aria-label="Tulis pesan gelembung"></textarea>
+      <button id="bubbleSendBtn" type="submit" aria-label="Kirim pesan">↑</button>
     </form>
   </section>
-  
-<!-- HALAMAN PROFIL PENGGUNA APP AI -->
-<section id="profilePage" class="profile-page" hidden>
 
-  <header class="profile-topbar">
-    <button
-      id="backProfileBtn"
-      class="profile-back"
-      type="button"
-      aria-label="Tutup profil"
-    >
-      Tutup <span aria-hidden="true">✕</span>
-    </button>
-
-    <h2>Profil Saya</h2>
-    <span class="profile-badge">APP AI</span>
-  </header>
-
-  <!-- Identitas pengguna -->
-  <div class="profile-card">
-
-    <div id="profileAvatar" class="profile-avatar">U</div>
-
-    <h3 id="profileDisplayName">Pengguna APP AI</h3>
-    <p class="profile-subtitle">Identitas pengguna</p>
-
-    <div class="profile-divider"></div>
-
-    <form id="profileForm">
-
-      <!-- Nama -->
-      <div class="profile-field">
-        <label for="profileNameInput">Nama lengkap</label>
-        <input
-          id="profileNameInput"
-          name="profileName"
-          type="text"
-          maxlength="40"
-          placeholder="Masukkan nama lengkap"
-          autocomplete="name"
-          required
-        />
-      </div>
-
-      <!-- Tanggal lahir -->
-      <div class="profile-field">
-        <label for="profileBirthDate">Tanggal lahir</label>
-        <input
-          id="profileBirthDate"
-          name="birthDate"
-          type="date"
-          autocomplete="bday"
-          required
-        />
-      </div>
-
-      <!-- Status: sekolah atau bekerja -->
-      <fieldset class="profile-field profile-status-field">
-        <legend>Status saat ini</legend>
-
-        <div class="profile-status-options">
-
-          <label class="profile-status-option" for="statusSchool">
-            <input
-              id="statusSchool"
-              type="radio"
-              name="profileStatus"
-              value="sekolah"
-              checked
-            />
-            <span>🎓 Sekolah</span>
-          </label>
-
-          <label class="profile-status-option" for="statusWork">
-            <input
-              id="statusWork"
-              type="radio"
-              name="profileStatus"
-              value="bekerja"
-            />
-            <span>💼 Bekerja</span>
-          </label>
-
-        </div>
-      </fieldset>
-
-
-<!-- Kolom khusus sekolah -->
-<div
-  id="schoolFields"
-  class="profile-conditional-fields"
->
-  <div class="profile-field">
-    <label for="profileSchoolLevel">Jenjang sekolah</label>
-
-    <button
-      type="button"
-      id="openSchoolLevelModal"
-      class="app-modal-input school-level-trigger"
-    >
-      <span id="schoolLevelLabel">SMK</span>
-      <span aria-hidden="true">⌄</span>
-    </button>
-
-    <select
-      id="profileSchoolLevel"
-      name="schoolLevel"
-      hidden
-    >
-      <option value="SD">SD</option>
-      <option value="SMP">SMP</option>
-      <option value="SMA">SMA</option>
-      <option value="SMK">SMK</option>
-    </select>
-  </div>
-
-  <!-- Hanya ditampilkan jika jenjang SMK -->
-  <div
-    id="majorField"
-    class="profile-field"
-    hidden
-  >
-    <label for="profileMajor">Jurusan SMK</label>
-
-    <input
-      id="profileMajor"
-      name="schoolMajor"
-      type="text"
-      maxlength="80"
-      placeholder="Contoh: TJKT"
-    />
-  </div>
-</div>
-
-
-        <!-- Hanya ditampilkan jika SMK -->
-        <div
-          id="majorField"
-          class="profile-field"
-          hidden
-        >
-          <label for="profileMajor">Jurusan SMK</label>
-
-          <input
-            id="profileMajor"
-            name="schoolMajor"
-            type="text"
-            maxlength="80"
-            placeholder="Contoh: TJKT"
-          />
-        </div>
-
-      </div>
-
-      <!-- Kolom khusus bekerja -->
-      <div
-        id="workFields"
-        class="profile-conditional-fields"
-        hidden
-      >
-        <div class="profile-field">
-          <label for="profileJob">Nama pekerjaan</label>
-
-          <input
-            id="profileJob"
-            name="jobName"
-            type="text"
-            maxlength="80"
-            placeholder="Masukkan nama pekerjaan"
-          />
-        </div>
-      </div>
-
-      <!-- Simpan profil -->
-      <button
-        id="saveProfileBtn"
-        class="profile-save-btn"
-        type="submit"
-      >
-        Simpan Perubahan
+  <section id="profilePage" class="profile-page" hidden>
+    <header class="profile-topbar">
+      <button id="backProfileBtn" class="profile-back"
+        type="button" aria-label="Tutup profil">
+        Tutup <span aria-hidden="true">✕</span>
       </button>
 
-      <p
-        id="profileStatus"
-        class="profile-status-message"
-        role="status"
-        aria-live="polite"
-      ></p>
+      <h2>Profil Saya</h2>
+      <span class="profile-badge">APP AI</span>
+    </header>
 
-    </form>
-  </div>
+    <div class="profile-card">
+      <div id="profileAvatar" class="profile-avatar">U</div>
+      <h3 id="profileDisplayName">Pengguna APP AI</h3>
+      <p class="profile-subtitle">Identitas pengguna</p>
+      <div class="profile-divider"></div>
 
-  <!-- Statistik penggunaan -->
-  <section class="profile-statistics">
+      <form id="profileForm">
+        <div class="profile-field">
+          <label for="profileNameInput">Nama lengkap</label>
+          <input id="profileNameInput" name="profileName"
+            type="text" maxlength="40"
+            placeholder="Masukkan nama lengkap"
+            autocomplete="name" required>
+        </div>
 
-    <h3>Statistik Penggunaan</h3>
-    <p class="profile-statistics-subtitle">
-      Ringkasan aktivitas APP AI
-    </p>
+        <div class="profile-field">
+          <label for="profileBirthDate">Tanggal lahir</label>
+          <input id="profileBirthDate" name="birthDate"
+            type="date" autocomplete="bday" required>
+        </div>
 
-    <div class="profile-stats-grid">
+        <fieldset class="profile-field profile-status-field">
+          <legend>Status saat ini</legend>
+          <div class="profile-status-options">
+            <label class="profile-status-option" for="statusSchool">
+              <input id="statusSchool" type="radio"
+                name="profileStatus" value="sekolah" checked>
+              <span>🎓 Sekolah</span>
+            </label>
 
-      <article class="profile-stat-card">
-        <span class="profile-stat-icon">💬</span>
-        <strong id="profileChatCount">0</strong>
-        <p>Percakapan</p>
-      </article>
+            <label class="profile-status-option" for="statusWork">
+              <input id="statusWork" type="radio"
+                name="profileStatus" value="bekerja">
+              <span>💼 Bekerja</span>
+            </label>
+          </div>
+        </fieldset>
 
-      <article class="profile-stat-card">
-        <span class="profile-stat-icon">✉️</span>
-        <strong id="profileMessageCount">0</strong>
-        <p>Total pesan</p>
-      </article>
+        <div id="schoolFields" class="profile-conditional-fields">
+          <div class="profile-field">
+            <label for="profileSchoolLevel">Jenjang sekolah</label>
 
+            <button type="button" id="openSchoolLevelModal"
+              class="school-level-trigger">
+              <span id="schoolLevelLabel">SMK</span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+
+            <select id="profileSchoolLevel" name="schoolLevel" hidden>
+              <option value="SD">SD</option>
+              <option value="SMP">SMP</option>
+              <option value="SMA">SMA</option>
+              <option value="SMK">SMK</option>
+            </select>
+          </div>
+
+          <div id="majorField" class="profile-field" hidden>
+            <label for="profileMajor">Jurusan SMK</label>
+            <input id="profileMajor" name="schoolMajor"
+              type="text" maxlength="80"
+              placeholder="Contoh: TJKT">
+          </div>
+        </div>
+
+        <div id="workFields" class="profile-conditional-fields" hidden>
+          <div class="profile-field">
+            <label for="profileJob">Nama pekerjaan</label>
+            <input id="profileJob" name="jobName"
+              type="text" maxlength="80"
+              placeholder="Masukkan nama pekerjaan">
+          </div>
+        </div>
+
+        <button id="saveProfileBtn" class="profile-save-btn" type="submit">
+          Simpan Perubahan
+        </button>
+
+        <p id="profileStatus" class="profile-status-message"
+          role="status" aria-live="polite"></p>
+      </form>
     </div>
+
+    <section class="profile-statistics">
+      <h3>Statistik Penggunaan</h3>
+      <p class="profile-statistics-subtitle">Ringkasan aktivitas APP AI</p>
+
+      <div class="profile-stats-grid">
+        <article class="profile-stat-card">
+          <span class="profile-stat-icon">💬</span>
+          <strong id="profileChatCount">0</strong>
+          <p>Percakapan</p>
+        </article>
+
+        <article class="profile-stat-card">
+          <span class="profile-stat-icon">✉️</span>
+          <strong id="profileMessageCount">0</strong>
+          <p>Total pesan</p>
+        </article>
+      </div>
+    </section>
+
+    <p class="profile-note">
+      Informasi profil disimpan di browser perangkat ini.
+    </p>
   </section>
 
-  <p class="profile-note">
-    Informasi profil disimpan di browser perangkat ini.
-  </p>
-
-</section>
-<!-- AKHIR HALAMAN PROFIL -->
-  
   <script src="script.js"></script>
 </body>
 </html>

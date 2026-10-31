@@ -780,12 +780,37 @@ async function sendMessageToAI(text) {
     ];
 
     // Menghasilkan jawaban
-    const response =
-      await engine.chat.completions.create({
-        messages: messages,
+    let response;
+
+try {
+    response = await engine.chat.completions.create({
+        messages,
         temperature: 0.4,
         max_tokens: 160
-      });
+    });
+
+} catch (error) {
+    if (!String(error.message).toLowerCase().includes("disposed")) {
+        throw error;
+    }
+
+    // Reset mesin AI yang sudah tidak aktif
+    aiEngine = null;
+    aiEnginePromise = null;
+
+    status.update("Mesin AI terputus. Memuat ulang...");
+
+    // Buat mesin AI baru
+    const newEngine = await loadAIEngine(
+        progress => status.update(progress)
+    );
+
+    response = await newEngine.chat.completions.create({
+        messages,
+        temperature: 0.4,
+        max_tokens: 160
+    });
+}
 
     const reply =
       response.choices?.[0]?.message?.content;

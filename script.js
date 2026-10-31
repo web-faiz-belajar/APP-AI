@@ -637,6 +637,131 @@ function addMessage(role, text) {
   updateProfileStatistics();
 }
 
+/* ========================================
+   8. CLOUD AI ENGINE - CLOUDFLARE
+======================================== */
+
+const AI_API_URL =
+  "https://app-ai-api.faiz05082007.workers.dev/";
+
+let aiGenerating = false;
+
+// Status sementara AI
+function createAIStatus() {
+  const mainStatus = document.createElement("div");
+  mainStatus.className = "chat-message ai";
+  mainStatus.textContent = "Menghubungkan ke APP AI...";
+
+  const bubbleStatus = document.createElement("div");
+  bubbleStatus.className = "bubble-message ai";
+  bubbleStatus.textContent = "Menghubungkan ke APP AI...";
+
+  chatMessages?.appendChild(mainStatus);
+  bubbleMessages?.appendChild(bubbleStatus);
+
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  if (bubbleMessages) {
+    bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
+  }
+
+  return {
+    update(text) {
+      mainStatus.textContent = text;
+      bubbleStatus.textContent = text;
+    },
+
+    remove() {
+      mainStatus.remove();
+      bubbleStatus.remove();
+    }
+  };
+}
+
+// Mengirim pertanyaan ke Cloudflare AI
+async function sendMessageToAI(text) {
+  const chat = getActiveChat();
+
+  if (!chat || aiGenerating) return;
+
+  aiGenerating = true;
+
+  if (sendBtn) sendBtn.disabled = true;
+  if (bubbleSendBtn) bubbleSendBtn.disabled = true;
+
+  const status = createAIStatus();
+
+  try {
+    status.update("Mengirim pesan ke server AI...");
+
+    // Mengambil maksimal 12 pesan terakhir
+    const history = chat.messages
+      .filter(message =>
+        ["user", "assistant"].includes(message.role) &&
+        typeof message.text === "string"
+      )
+      .slice(-12)
+      .map(message => ({
+        role: message.role,
+        content: message.text.slice(0, 4000)
+      }));
+
+    status.update("APP AI sedang berpikir...");
+
+    // Menghubungi Cloudflare Worker
+    const response = await fetch(AI_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        messages: history
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || `Server error: ${response.status}`
+      );
+    }
+
+    const reply = data.reply;
+
+    if (
+      typeof reply !== "string" ||
+      !reply.trim()
+    ) {
+      throw new Error("AI tidak memberikan jawaban.");
+    }
+
+    status.remove();
+
+    // Menyimpan jawaban AI
+    addMessage("assistant", reply.trim());
+
+  } catch (error) {
+    console.error("Cloud AI Error:", error);
+
+    status.remove();
+
+    addMessage(
+      "assistant",
+      "Maaf, APP AI mengalami gangguan saat menghubungi server. " +
+      "Silakan coba kembali. Detail: " +
+      error.message
+    );
+
+  } finally {
+    aiGenerating = false;
+
+    if (sendBtn) sendBtn.disabled = false;
+    if (bubbleSendBtn) bubbleSendBtn.disabled = false;
+  }
+}
 
 /* ========================================
    8. LOCAL AI ENGINE - QWEN
@@ -793,60 +918,6 @@ try {
     if (!String(error.message).toLowerCase().includes("disposed")) {
         throw error;
     }
-
-    // Reset mesin AI yang sudah tidak aktif
-    aiEngine = null;
-    aiEnginePromise = null;
-
-    status.update("Mesin AI terputus. Memuat ulang...");
-
-    // Buat mesin AI baru
-    const newEngine = await loadAIEngine(
-        progress => status.update(progress)
-    );
-
-    response = await newEngine.chat.completions.create({
-        messages,
-        temperature: 0.4,
-        max_tokens: 160
-    });
-}
-
-    const reply =
-      response.choices?.[0]?.message?.content;
-
-    if (!reply || !reply.trim()) {
-      throw new Error("AI tidak menghasilkan jawaban.");
-    }
-
-    status.remove();
-
-    // Menyimpan jawaban AI
-    addMessage("assistant", reply.trim());
-
-  } catch (error) {
-
-    console.error("AI Engine Error:", error);
-
-    status.remove();
-
-    addMessage(
-      "assistant",
-      "Maaf, mesin AI mengalami kesalahan. " +
-      "Silakan coba kembali. Detail: " +
-      error.message
-    );
-
-  } finally {
-
-    aiGenerating = false;
-
-    if (sendBtn) sendBtn.disabled = false;
-    if (bubbleSendBtn) bubbleSendBtn.disabled = false;
-
-  }
-}
-
 
 /* ========================================
    9. FORM CHAT UTAMA

@@ -637,68 +637,191 @@ function addMessage(role, text) {
   updateProfileStatistics();
 }
 
+
 /* ========================================
-   8. MODE DEMO CHAT
-   Belum menggunakan API key.
+   8. LOCAL AI ENGINE - QWEN
+   Tanpa API Key
 ======================================== */
 
-function getDemoReply(text) {
-  const lower = text.toLowerCase();
+const AI_MODEL =
+  "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 
-  if (lower.includes("halo") || lower.includes("hai")) {
-    return "Halo! 👋 Selamat datang di APP AI. Saat ini saya berjalan dalam mode demo.";
+let aiEngine = null;
+let aiEnginePromise = null;
+let aiGenerating = false;
+
+// Memuat mesin AI satu kali
+async function loadAIEngine(onProgress) {
+
+  if (aiEngine) return aiEngine;
+
+  if (!aiEnginePromise) {
+
+    aiEnginePromise = (async () => {
+
+      const { CreateMLCEngine } =
+        await import(
+          "https://esm.run/@mlc-ai/web-llm@0.2.87"
+        );
+
+      const engine = await CreateMLCEngine(
+        AI_MODEL,
+        {
+          initProgressCallback: (progress) => {
+            if (onProgress) {
+              onProgress(progress.text);
+            }
+          }
+        }
+      );
+
+      return engine;
+
+    })();
   }
 
-  if (lower.includes("nama kamu")) {
-    return "Saya APP AI, asisten virtual dalam aplikasi ini.";
-  }
+  try {
 
-  if (lower.includes("html")) {
-    return "HTML adalah bahasa markup untuk membuat struktur halaman web. Contohnya: heading, paragraf, gambar, dan tombol.";
-  }
+    aiEngine = await aiEnginePromise;
+    return aiEngine;
 
-  if (lower.includes("css")) {
-    return "CSS digunakan untuk mengatur tampilan halaman web, seperti warna, ukuran, jarak, layout, dan animasi.";
-  }
+  } catch (error) {
 
-  if (lower.includes("javascript") || lower.includes("js")) {
-    return "JavaScript digunakan untuk membuat halaman web menjadi interaktif, misalnya tombol, menu, dan pengolahan data.";
-  }
+    aiEnginePromise = null;
+    throw error;
 
-  if (lower.includes("terima kasih")) {
-    return "Sama-sama! Senang bisa membantu. 😊";
   }
-
-  return "Pesan kamu berhasil diterima! Saat ini APP AI masih dalam mode demo dan belum terhubung ke layanan AI. Setelah fitur aplikasi selesai diuji, kita bisa memasang API baru.";
 }
 
+// Status sementara AI
+function createAIStatus() {
+
+  const mainStatus = document.createElement("div");
+  mainStatus.className = "chat-message ai";
+  mainStatus.textContent = "Menyiapkan AI...";
+
+  const bubbleStatus = document.createElement("div");
+  bubbleStatus.className = "bubble-message ai";
+  bubbleStatus.textContent = "Menyiapkan AI...";
+
+  chatMessages?.appendChild(mainStatus);
+  bubbleMessages?.appendChild(bubbleStatus);
+
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  if (bubbleMessages) {
+    bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
+  }
+
+  return {
+    update(text) {
+      mainStatus.textContent = text;
+      bubbleStatus.textContent = text;
+    },
+
+    remove() {
+      mainStatus.remove();
+      bubbleStatus.remove();
+    }
+  };
+}
+
+// Mengirim pertanyaan ke AI lokal
 async function sendMessageToAI(text) {
+
   const chat = getActiveChat();
 
-  if (!chat) return;
+  if (!chat || aiGenerating) return;
+
+  aiGenerating = true;
 
   if (sendBtn) sendBtn.disabled = true;
   if (bubbleSendBtn) bubbleSendBtn.disabled = true;
 
+  const status = createAIStatus();
+
   try {
-    // Simulasi balasan tanpa API.
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const reply = getDemoReply(text);
+    // Memuat model jika belum tersedia
+    status.update("Memuat mesin AI lokal...");
 
-    addMessage("assistant", reply);
+    const engine = await loadAIEngine((progress) => {
+      status.update(progress);
+    });
+
+    status.update("AI sedang menyusun jawaban...");
+
+    // Mengambil konteks percakapan
+    const history = chat.messages
+      .filter(message =>
+        ["user", "assistant"].includes(message.role)
+      )
+      .slice(-12)
+      .map(message => ({
+        role: message.role,
+        content: message.text
+      }));
+
+    // Instruksi utama AI
+    const messages = [
+      {
+        role: "system",
+        content:
+          "Kamu adalah APP AI, asisten kecerdasan buatan " +
+          "yang ramah, informatif, dan membantu. " +
+          "Jawab menggunakan bahasa Indonesia jika pengguna " +
+          "menggunakan bahasa Indonesia. " +
+          "Berikan penjelasan yang jelas dan mudah dipahami. " +
+          "Jangan mengarang informasi jika tidak mengetahuinya."
+      },
+      ...history
+    ];
+
+    // Menghasilkan jawaban
+    const response =
+      await engine.chat.completions.create({
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 400
+      });
+
+    const reply =
+      response.choices?.[0]?.message?.content;
+
+    if (!reply || !reply.trim()) {
+      throw new Error("AI tidak menghasilkan jawaban.");
+    }
+
+    status.remove();
+
+    // Menyimpan jawaban AI
+    addMessage("assistant", reply.trim());
+
   } catch (error) {
-    console.error("Kesalahan mode demo:", error);
 
-    await appAlert(
-      "Terjadi kesalahan saat menampilkan balasan.",
-      "Kesalahan"
+    console.error("AI Engine Error:", error);
+
+    status.remove();
+
+    addMessage(
+      "assistant",
+      "Maaf, mesin AI mengalami kesalahan. " +
+      "Silakan coba kembali. Detail: " +
+      error.message
     );
+
   } finally {
+
+    aiGenerating = false;
+
     if (sendBtn) sendBtn.disabled = false;
     if (bubbleSendBtn) bubbleSendBtn.disabled = false;
+
   }
 }
+
 
 /* ========================================
    9. FORM CHAT UTAMA

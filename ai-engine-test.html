@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APP AI - Local Engine</title>
+
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    button, input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border-radius: 9px;
+      border: none;
+      font-size: 15px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+    }
+
+    input {
+      background: #334155;
+      color: white;
+    }
+
+    #status, #answer {
+      margin-top: 18px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>APP AI</h2>
+  <p>Local Artificial Intelligence Engine</p>
+
+  <div class="card">
+
+    <h3>Model: Qwen 0.5B</h3>
+
+    <button id="loadBtn">
+      Muat Model AI
+    </button>
+
+    <div id="status">
+      Model belum dimuat.
+    </div>
+
+    <input
+      id="question"
+      placeholder="Tulis pertanyaan..."
+    >
+
+    <button id="sendBtn" disabled>
+      Kirim Pertanyaan
+    </button>
+
+    <div id="answer"></div>
+
+  </div>
+
+  <script type="module">
+
+    import {
+      CreateMLCEngine
+    } from "https://esm.run/@mlc-ai/web-llm@0.2.87";
+
+    const MODEL =
+      "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
+
+    const status =
+      document.getElementById("status");
+
+    const answer =
+      document.getElementById("answer");
+
+    const loadBtn =
+      document.getElementById("loadBtn");
+
+    const sendBtn =
+      document.getElementById("sendBtn");
+
+    let engine = null;
+
+    loadBtn.onclick = async () => {
+
+      loadBtn.disabled = true;
+
+      try {
+
+        status.textContent =
+          "Sedang mengunduh dan memuat model...";
+
+        engine = await CreateMLCEngine(
+          MODEL,
+          {
+            initProgressCallback: (progress) => {
+              status.textContent =
+                progress.text;
+            }
+          }
+        );
+
+        status.textContent =
+          "AI berhasil dimuat dan siap digunakan!";
+
+        sendBtn.disabled = false;
+
+      } catch (error) {
+
+        status.textContent =
+          "Gagal memuat AI: " + error.message;
+
+        loadBtn.disabled = false;
+
+      }
+    };
+
+    sendBtn.onclick = async () => {
+
+      const question =
+        document.getElementById("question")
+          .value.trim();
+
+      if (!question || !engine) return;
+
+      sendBtn.disabled = true;
+      answer.textContent = "AI sedang berpikir...";
+
+      try {
+
+        const result =
+          await engine.chat.completions.create({
+            messages: [
+              {
+                role: "system",
+                content:
+                  "Kamu adalah APP AI, asisten yang membantu dan menjawab menggunakan bahasa Indonesia."
+              },
+              {
+                role: "user",
+                content: question
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 250
+          });
+
+        answer.textContent =
+          result.choices[0].message.content;
+
+      } catch (error) {
+
+        answer.textContent =
+          "Terjadi kesalahan: " + error.message;
+
+      }
+
+      sendBtn.disabled = false;
+    };
+
+  </script>
+
+</body>
+</html>

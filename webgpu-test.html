@@ -3,93 +3,78 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APP AI - WebGPU Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APP AI - GPU Diagnostic</title>
   <style>
     body {
       background: #0f172a;
       color: white;
       font-family: Arial, sans-serif;
-      padding: 25px;
-      text-align: center;
+      padding: 20px;
     }
-
     .card {
       background: #1e293b;
-      padding: 25px;
+      padding: 20px;
       border-radius: 15px;
-      margin-top: 30px;
+      margin-top: 20px;
     }
-
     button {
       background: #2563eb;
       color: white;
-      border: none;
-      padding: 14px 25px;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-top: 20px;
+      padding: 13px;
+      border: 0;
+      border-radius: 9px;
+      width: 100%;
     }
-
     #result {
-      margin-top: 25px;
-      line-height: 1.7;
+      line-height: 1.8;
       overflow-wrap: anywhere;
     }
   </style>
 </head>
 <body>
-
-  <h1>APP AI</h1>
-  <p>WebGPU Compatibility Test</p>
+  <h2>APP AI</h2>
+  <p>GPU Diagnostic System</p>
 
   <div class="card">
-    <h3>Pemeriksaan GPU</h3>
-    <p>Periksa apakah perangkat mendukung WebGPU.</p>
-
-    <button onclick="testGPU()">Mulai Pemeriksaan</button>
-
-    <div id="result">Belum diperiksa.</div>
+    <button onclick="diagnostic()">Periksa GPU</button>
+    <div id="result">Menunggu pemeriksaan...</div>
   </div>
 
   <script>
-    async function testGPU() {
+    async function diagnostic() {
       const result = document.getElementById("result");
-
-      result.innerHTML = "Sedang memeriksa GPU...";
+      result.innerHTML = "Memeriksa perangkat...";
 
       try {
-        if (!navigator.gpu) {
-          result.innerHTML =
-            "WebGPU TIDAK TERSEDIA di browser ini.";
-          return;
-        }
-
-        const adapter = await navigator.gpu.requestAdapter();
+        const adapter = await navigator.gpu?.requestAdapter();
 
         if (!adapter) {
-          result.innerHTML =
-            "GPU adapter tidak ditemukan.";
+          result.innerHTML = "GPU adapter tidak ditemukan.";
           return;
         }
 
         const device = await adapter.requestDevice();
 
+        const f16 = adapter.features.has("shader-f16");
+        const memory = navigator.deviceMemory || "Tidak tersedia";
+
         result.innerHTML = `
-          <h2>WebGPU BERHASIL!</h2>
-          Browser mendukung WebGPU.<br>
-          GPU berhasil digunakan.<br>
-          <b>Perangkat siap untuk pengujian AI.</b>
+          <h3>Hasil Pemeriksaan</h3>
+          WebGPU: BERHASIL<br>
+          Shader F16: ${f16 ? "DIDUKUNG" : "TIDAK DIDUKUNG"}<br>
+          Max Buffer: ${device.limits.maxBufferSize} bytes<br>
+          RAM perkiraan browser: ${memory} GB<br>
+          <br>
+          <b>GPU berhasil diperiksa.</b>
         `;
 
         device.destroy();
 
       } catch (error) {
-        result.innerHTML =
-          "Terjadi kesalahan: " + error.message;
+        result.innerHTML = "Error: " + error.message;
       }
     }
   </script>
-
 </body>
 </html>

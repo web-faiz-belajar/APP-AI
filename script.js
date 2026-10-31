@@ -758,7 +758,7 @@ async function sendMessageToAI(text) {
       .filter(message =>
         ["user", "assistant"].includes(message.role)
       )
-      .slice(-12)
+      .slice(-4)
       .map(message => ({
         role: message.role,
         content: message.text
@@ -783,8 +783,8 @@ async function sendMessageToAI(text) {
     const response =
       await engine.chat.completions.create({
         messages: messages,
-        temperature: 0.7,
-        max_tokens: 400
+        temperature: 0.4,
+        max_tokens: 160
       });
 
     const reply =

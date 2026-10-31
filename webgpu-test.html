@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APP AI - WebGPU Test</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    #result {
+      margin-top: 25px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>APP AI</h1>
+  <p>WebGPU Compatibility Test</p>
+
+  <div class="card">
+    <h3>Pemeriksaan GPU</h3>
+    <p>Periksa apakah perangkat mendukung WebGPU.</p>
+
+    <button onclick="testGPU()">Mulai Pemeriksaan</button>
+
+    <div id="result">Belum diperiksa.</div>
+  </div>
+
+  <script>
+    async function testGPU() {
+      const result = document.getElementById("result");
+
+      result.innerHTML = "Sedang memeriksa GPU...";
+
+      try {
+        if (!navigator.gpu) {
+          result.innerHTML =
+            "WebGPU TIDAK TERSEDIA di browser ini.";
+          return;
+        }
+
+        const adapter = await navigator.gpu.requestAdapter();
+
+        if (!adapter) {
+          result.innerHTML =
+            "GPU adapter tidak ditemukan.";
+          return;
+        }
+
+        const device = await adapter.requestDevice();
+
+        result.innerHTML = `
+          <h2>WebGPU BERHASIL!</h2>
+          Browser mendukung WebGPU.<br>
+          GPU berhasil digunakan.<br>
+          <b>Perangkat siap untuk pengujian AI.</b>
+        `;
+
+        device.destroy();
+
+      } catch (error) {
+        result.innerHTML =
+          "Terjadi kesalahan: " + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>

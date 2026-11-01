@@ -769,27 +769,31 @@ async function sendMessageToAI(text) {
     let buffer = "";
     let fullReply = "";
 
-    function processLine(line) {
-      const trimmed = line.trim();
+function processLine(line) {
+  let trimmed = line.trim();
 
-      if (!trimmed.startsWith("data:")) return;
+  // Abaikan baris kosong
+  if (!trimmed) return;
 
-      const payload = trimmed.slice(5).trim();
+  // Hilangkan awalan data: berulang jika ada
+  while (trimmed.startsWith("data:")) {
+    trimmed = trimmed.slice(5).trim();
+  }
 
-      if (!payload || payload === "[DONE]") return;
+  if (!trimmed || trimmed === "[DONE]") return;
 
-      try {
-        const data = JSON.parse(payload);
-        const chunk = extractStreamText(data);
+  try {
+    const data = JSON.parse(trimmed);
+    const chunk = extractStreamText(data);
 
-        if (chunk) {
-          fullReply += chunk;
-          status.update(fullReply);
-        }
-      } catch (error) {
-        console.warn("Potongan streaming tidak valid:", error);
-      }
+    if (chunk) {
+      fullReply += chunk;
+      status.update(fullReply);
     }
+  } catch (error) {
+    console.warn("Potongan streaming dilewati:", trimmed);
+  }
+}
 
     while (true) {
       const { value, done } = await reader.read();

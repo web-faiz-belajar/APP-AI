@@ -638,7 +638,7 @@ function addMessage(role, text) {
 }
 
 /* ========================================
-   8. CLOUD AI ENGINE - CLOUDFLARE
+   8. CLOUD AI ENGINE - CLOUDFLARE STREAMING
 ======================================== */
 
 const AI_API_URL =
@@ -671,6 +671,14 @@ function createAIStatus() {
     update(text) {
       mainStatus.textContent = text;
       bubbleStatus.textContent = text;
+
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      if (bubbleMessages) {
+        bubbleMessages.scrollTop = bubbleMessages.scrollHeight;
+      }
     },
 
     remove() {
@@ -678,6 +686,20 @@ function createAIStatus() {
       bubbleStatus.remove();
     }
   };
+}
+
+// Mengambil teks dari potongan streaming
+function extractStreamText(data) {
+  if (typeof data === "string") {
+    return data;
+  }
+
+  return (
+    data?.response ||
+    data?.choices?.[0]?.delta?.content ||
+    data?.choices?.[0]?.message?.content ||
+    ""
+  );
 }
 
 // Mengirim pertanyaan ke Cloudflare AI
@@ -721,30 +743,90 @@ async function sendMessageToAI(text) {
       })
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const errorText = await response.text();
+
+      let errorMessage = errorText;
+
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.error || errorText;
+      } catch {}
+
       throw new Error(
-        data.error || `Server error: ${response.status}`
+        errorMessage || `Server error: ${response.status}`
       );
     }
 
-    const reply = data.reply;
+    if (!response.body) {
+      throw new Error("Streaming tidak didukung oleh browser.");
+    }
 
-    if (
-      typeof reply !== "string" ||
-      !reply.trim()
-    ) {
+    // Membaca jawaban secara bertahap
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let buffer = "";
+    let fullReply = "";
+
+    function processLine(line) {
+      const trimmed = line.trim();
+
+      if (!trimmed.startsWith("data:")) return;
+
+      const payload = trimmed.slice(5).trim();
+
+      if (!payload || payload === "[DONE]") return;
+
+      try {
+        const data = JSON.parse(payload);
+        const chunk = extractStreamText(data);
+
+        if (chunk) {
+          fullReply += chunk;
+          status.update(fullReply);
+        }
+      } catch (error) {
+        console.warn("Potongan streaming tidak valid:", error);
+      }
+    }
+
+    while (true) {
+      const { value, done } = await reader.read();
+
+      if (done) break;
+
+      buffer += decoder.decode(value, {
+        stream: true
+      });
+
+      const lines = buffer.split("\n");
+
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        processLine(line);
+      }
+    }
+
+    // Memproses sisa data terakhir
+    buffer += decoder.decode();
+
+    if (buffer.trim()) {
+      processLine(buffer);
+    }
+
+    if (!fullReply.trim()) {
       throw new Error("AI tidak memberikan jawaban.");
     }
 
+    // Menyimpan jawaban AI setelah selesai
     status.remove();
 
-    // Menyimpan jawaban AI
-    addMessage("assistant", reply.trim());
+    addMessage("assistant", fullReply.trim());
 
   } catch (error) {
-    console.error("Cloud AI Error:", error);
+    console.error("Cloud AI Streaming Error:", error);
 
     status.remove();
 
